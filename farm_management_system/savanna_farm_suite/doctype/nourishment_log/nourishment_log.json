@@ -1,0 +1,135 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "NOURISH-.###.-YYYY./.MM./.DD.",
+ "creation": "2025-09-01 10:15:00.273751",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_d2lm",
+  "amended_from",
+  "date_of_nourishment",
+  "poultry_batch",
+  "log_for_poultry_shed",
+  "feed_issued",
+  "default_uom",
+  "qty_issued",
+  "avg_consumption",
+  "user",
+  "hydration_was_confirmed"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_d2lm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Nourishment Log",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "date_of_nourishment",
+   "fieldtype": "Datetime",
+   "label": "Date of Nourishment"
+  },
+  {
+   "bold": 1,
+   "fieldname": "poultry_batch",
+   "fieldtype": "Link",
+   "label": "Log intended for Poultry Batch",
+   "options": "Poultry Batches",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "log_for_poultry_shed",
+   "fieldtype": "Link",
+   "label": "Log intended for Poultry Shed",
+   "options": "Poultry Shed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "feed_issued",
+   "fieldtype": "Link",
+   "label": "Type of Feed Issued",
+   "options": "Animal Feeds"
+  },
+  {
+   "bold": 1,
+   "fieldname": "qty_issued",
+   "fieldtype": "Float",
+   "label": "Quantity of Feed Issued",
+   "precision": "3",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "default_uom",
+   "fieldtype": "Data",
+   "label": "Default UOM",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User who conducted Nourishment Exercise",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "avg_consumption",
+   "fieldtype": "Float",
+   "label": "Average Consumption per Animal",
+   "non_negative": 1,
+   "precision": "3",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "hydration_was_confirmed",
+   "fieldtype": "Check",
+   "label": "Hydration was Confirmed"
+  }
+ ],
+ "grid_page_length": 50,
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-09-01 10:32:32.833780",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Nourishment Log",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}

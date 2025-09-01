@@ -1,0 +1,51 @@
+/* Farm Management System Banner Styles */
+
+.web-form-banner-container {
+  width: 100%;
+  min-height: 200px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #4CAF50 0%, #8BC34A 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.web-form-banner-image {
+  width: 100%;
+  height: auto;
+  max-height: 300px;
+  object-fit: cover;
+  object-position: center;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Ensure banner is visible on all web form pages */
+.web-form-header {
+  position: relative;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .web-form-banner-container {
+    min-height: 150px;
+  }
+  
+  .web-form-banner-image {
+    max-height: 200px;
+  }
+}
+
+/* Animation for banner transitions */
+.web-form-banner-image {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

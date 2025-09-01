@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-08-31 07:47:09.131130",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "select_type_of_animal",
+  "select_animal_category",
+  "animal_life_cycle",
+  "measure_in",
+  "feeding_frequency"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "select_type_of_animal",
+   "fieldtype": "Link",
+   "label": "Select type of Animal",
+   "options": "Animals",
+   "print_width": "3",
+   "width": "3"
+  },
+  {
+   "fieldname": "select_animal_category",
+   "fieldtype": "Link",
+   "label": "Select Animal Category",
+   "options": "Animals Categories",
+   "print_width": "3",
+   "width": "3"
+  },
+  {
+   "fieldname": "animal_life_cycle",
+   "fieldtype": "Link",
+   "label": "Choose the Animal Life Cycle ",
+   "options": "Animal Stages",
+   "print_width": "3",
+   "width": "3"
+  },
+  {
+   "fieldname": "measure_in",
+   "fieldtype": "Link",
+   "label": "Feed Measured In (Specify UOM)",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "feeding_frequency",
+   "fieldtype": "Select",
+   "label": "Feeding Frequency",
+   "options": "\nPer Day\nPer Week\nPer Quarter\nPer Month"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-08-31 16:31:19.724618",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Animal and Feed Formulation",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -11,26 +11,25 @@ app_license = "mit"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "farm_management_system",
-# 		"logo": "/assets/farm_management_system/logo.png",
-# 		"title": "Savanna Farm Suite",
-# 		"route": "/farm_management_system",
-# 		"has_permission": "farm_management_system.api.permission.has_app_permission"
-# 	}
-# ]
 
+add_to_apps_screen = [
+	{
+		"name": "farm_management_system",
+		"logo": "/assets/farm_management_system/farm.svg",
+		"title": "Savanna Farm Suite",
+		"route": "/app/farm_management_system"
+	}
+]
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/farm_management_system/css/farm_management_system.css"
-# app_include_js = "/assets/farm_management_system/js/farm_management_system.js"
+app_include_css = "/assets/farm_management_system/css/banners.css"
+app_include_js = "/assets/farm_management_system/js/banners.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/farm_management_system/css/farm_management_system.css"
-# web_include_js = "/assets/farm_management_system/js/farm_management_system.js"
+# web_include_css = "/assets/farm_management_system/css/banners.css"
+# web_include_js = "/assets/farm_management_system/js/banners.js"
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "farm_management_system/public/scss/website"
@@ -51,7 +50,15 @@ app_license = "mit"
 # Svg Icons
 # ------------------
 # include app icons in desk
-# app_include_icons = "farm_management_system/public/icons.svg"
+# app_include_icons = "farm_management_system/public/icons.html"
+# app_include_icons = [
+#     "farm_management_system/public/pig.svg",
+#     "farm_management_system/public/livestock.svg",
+#     "farm_management_system/public/plants.svg",
+#     "farm_management_system/public/poultry.svg"
+# ]
+
+
 
 # Home Pages
 # ----------

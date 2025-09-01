@@ -1,0 +1,145 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-01 09:31:40.227444",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "nourishment_record_section",
+  "record",
+  "section_break_bcyv",
+  "poultry_category",
+  "poultry_batch",
+  "poultry_house",
+  "column_break_mwzl",
+  "nourishment_date",
+  "user",
+  "feeding_section_section",
+  "table_ycas",
+  "incl_hydration",
+  "hydration_section_section",
+  "water_amount"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "default": "By Batch",
+   "fieldname": "poultry_category",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Categorize Poultry by?",
+   "options": "\nBy Batch\nBy Poultry Shed",
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "nourishment_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Nourishment Date",
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.poultry_category == \"By Batch\"",
+   "fieldname": "poultry_batch",
+   "fieldtype": "Link",
+   "label": "Specify which Poultry Batch",
+   "mandatory_depends_on": "eval:doc.poultry_category == \"By Batch\"",
+   "options": "Poultry Batches"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "label": "User Conducting Routine",
+   "options": "User"
+  },
+  {
+   "depends_on": "eval:doc.poultry_category == \"By Poultry Shed\"",
+   "fieldname": "poultry_house",
+   "fieldtype": "Link",
+   "label": "Specify which Poultry Shed",
+   "mandatory_depends_on": "eval:doc.poultry_category == \"By Poultry Shed\"",
+   "options": "Poultry Shed"
+  },
+  {
+   "fieldname": "feeding_section_section",
+   "fieldtype": "Section Break",
+   "label": "Feeding Section"
+  },
+  {
+   "bold": 1,
+   "fieldname": "table_ycas",
+   "fieldtype": "Table",
+   "options": "Nourishment Table"
+  },
+  {
+   "fieldname": "column_break_mwzl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "incl_hydration",
+   "fieldtype": "Check",
+   "label": "Include Hydration in Today's Routine"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:doc.incl_hydration == 1",
+   "depends_on": "eval:doc.incl_hydration == 1",
+   "fieldname": "hydration_section_section",
+   "fieldtype": "Section Break",
+   "label": "Hydration Section"
+  },
+  {
+   "fieldname": "water_amount",
+   "fieldtype": "Float",
+   "label": "Specify Amount of Water used (In Litres)",
+   "mandatory_depends_on": "eval:doc.incl_hydration == 1",
+   "precision": "3"
+  },
+  {
+   "collapsible": 1,
+   "depends_on": "eval:doc.nourishment_date",
+   "fieldname": "nourishment_record_section",
+   "fieldtype": "Section Break",
+   "label": "Nourishment Record"
+  },
+  {
+   "description": "NOTE: Results may be LIMITED to ONLY a few days.",
+   "fieldname": "record",
+   "fieldtype": "HTML"
+  },
+  {
+   "fieldname": "section_break_bcyv",
+   "fieldtype": "Section Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-09-01 10:28:38.032062",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Feeding and Watering Tool",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

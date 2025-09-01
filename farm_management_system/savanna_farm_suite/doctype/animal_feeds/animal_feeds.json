@@ -1,0 +1,136 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "format: AF/{###}",
+ "creation": "2025-08-31 07:08:19.809393",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "important_feed_details_tab",
+  "specify_feed_details_section",
+  "feed_name",
+  "uom",
+  "feed_supplier",
+  "column_break_dmcp",
+  "cost_of_the_feed",
+  "important_notes_for_this_feed",
+  "image_of_feed",
+  "animal_feed_formulation_tab",
+  "animal_feed_formulation",
+  "table_bytk"
+ ],
+ "fields": [
+  {
+   "fieldname": "specify_feed_details_section",
+   "fieldtype": "Section Break",
+   "label": "Specify Feed Details"
+  },
+  {
+   "bold": 1,
+   "description": "Example: Oatmeal",
+   "fieldname": "feed_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name of the Feed",
+   "placeholder": "Growers",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "bold": 1,
+   "default": "Kg",
+   "description": "Multiple Selection Allowed.",
+   "fieldname": "uom",
+   "fieldtype": "Table MultiSelect",
+   "label": "Feed Administered in which UOM?",
+   "options": "Animal Feeds UOM",
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "description": "Multiple Selection Allowed.",
+   "fieldname": "feed_supplier",
+   "fieldtype": "Table MultiSelect",
+   "label": "Select Supplier(s) for this Feed",
+   "options": "Animal Feeds Suppliers"
+  },
+  {
+   "fieldname": "column_break_dmcp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "cost_of_the_feed",
+   "fieldtype": "Currency",
+   "label": "Cost of the Feed",
+   "non_negative": 1,
+   "precision": "3"
+  },
+  {
+   "bold": 1,
+   "description": "EXAMPLE: Toxicity/Anti-Nutritional Factors",
+   "fieldname": "important_notes_for_this_feed",
+   "fieldtype": "Small Text",
+   "label": "Important Notes for this Feed"
+  },
+  {
+   "fieldname": "important_feed_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Important Feed Details"
+  },
+  {
+   "fieldname": "animal_feed_formulation_tab",
+   "fieldtype": "Tab Break",
+   "label": "Animal Feed Formulation"
+  },
+  {
+   "description": "This section links specific animals to feed formulas created for them to meet the nutritional demands of the target animal at a particular life stage.",
+   "fieldname": "animal_feed_formulation",
+   "fieldtype": "Section Break",
+   "label": "Animal & Feed Formulation \ud83d\udc16\ud83d\udc14\ud83d\udc04"
+  },
+  {
+   "bold": 1,
+   "description": "Note: Feeding requirements and methods may vary depending on the type of animal.",
+   "fieldname": "table_bytk",
+   "fieldtype": "Table",
+   "options": "Animal and Feed Formulation"
+  },
+  {
+   "bold": 1,
+   "fieldname": "image_of_feed",
+   "fieldtype": "Attach Image",
+   "label": "Image of Animal Feed (ATTACH)"
+  }
+ ],
+ "grid_page_length": 50,
+ "image_field": "image_of_feed",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-08-31 16:43:28.652413",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Animal Feeds",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "feed_name,cost_of_the_feed",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "feed_name"
+}

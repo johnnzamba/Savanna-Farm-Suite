@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:animal_stage_name",
+ "creation": "2025-08-31 07:50:43.015698",
+ "description": "An animal's life cycle are a critical part of a feed management system because their nutritional needs change dramatically from birth to adulthood.",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "animal_stage_name",
+  "applicable_for"
+ ],
+ "fields": [
+  {
+   "description": "EXAMPLE: Chick or Starter",
+   "fieldname": "animal_stage_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Animal Stage Name",
+   "placeholder": "Grower",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "applicable_for",
+   "fieldtype": "Link",
+   "label": "Applicable to which Animal?",
+   "options": "Animals",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-08-31 16:56:21.824775",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Animal Stages",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "search_fields": "animal_stage_name,applicable_for",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "animal_stage_name"
+}

@@ -15,6 +15,7 @@
   "batch_status",
   "column_break_fbtk",
   "animal_stage",
+  "age_from_hatch_date",
   "total_animals",
   "batch_weight",
   "average_weight_per_bird",
@@ -62,6 +63,7 @@
   },
   {
    "bold": 1,
+   "depends_on": "eval:doc.animal_batch",
    "description": "Multiple Selection Allowed.",
    "fieldname": "animal_category",
    "fieldtype": "Table MultiSelect",
@@ -76,6 +78,7 @@
   },
   {
    "bold": 1,
+   "depends_on": "eval:doc.animal_batch",
    "fieldname": "animal_stage",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -191,7 +194,7 @@
    "bold": 1,
    "fieldname": "batch_weight",
    "fieldtype": "Float",
-   "label": "Total Weight of this Batch",
+   "label": "Total Weight of this Batch (In KG)",
    "non_negative": 1,
    "placeholder": "65.93",
    "precision": "3",
@@ -240,11 +243,20 @@
    "options": "Purchase Order"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "batch_status",
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Batch Status",
    "options": "\nActive\nCulled\nPartially Sold"
+  },
+  {
+   "bold": 1,
+   "description": "EXAMPLE: 1 Week, 3 Days, 1 Month etc...",
+   "fieldname": "age_from_hatch_date",
+   "fieldtype": "Data",
+   "label": "Time Since Hatching",
+   "placeholder": "1 Day"
   }
  ],
  "grid_page_length": 50,
@@ -252,7 +264,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-01 11:18:46.800742",
+ "modified": "2025-09-01 17:04:37.688771",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Poultry Batches",
@@ -274,7 +286,7 @@
   }
  ],
  "row_format": "Dynamic",
- "search_fields": "animal_batch,animal_batch",
+ "search_fields": "animal_batch,batch_status, total_animals",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [

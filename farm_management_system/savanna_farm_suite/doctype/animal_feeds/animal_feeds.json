@@ -17,7 +17,10 @@
   "image_of_feed",
   "animal_feed_formulation_tab",
   "animal_feed_formulation",
-  "table_bytk"
+  "table_bytk",
+  "stock_level_and_costs_tab",
+  "history_of_feed_purchases",
+  "html_dgyh"
  ],
  "fields": [
   {
@@ -101,13 +104,27 @@
    "fieldname": "image_of_feed",
    "fieldtype": "Attach Image",
    "label": "Image of Animal Feed (ATTACH)"
+  },
+  {
+   "fieldname": "stock_level_and_costs_tab",
+   "fieldtype": "Tab Break",
+   "label": "Stock Level and Costs"
+  },
+  {
+   "fieldname": "history_of_feed_purchases",
+   "fieldtype": "HTML",
+   "label": "History of Purchases made"
+  },
+  {
+   "fieldname": "html_dgyh",
+   "fieldtype": "HTML"
   }
  ],
  "grid_page_length": 50,
  "image_field": "image_of_feed",
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-08-31 16:43:28.652413",
+ "modified": "2025-09-01 16:15:53.137775",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Animal Feeds",

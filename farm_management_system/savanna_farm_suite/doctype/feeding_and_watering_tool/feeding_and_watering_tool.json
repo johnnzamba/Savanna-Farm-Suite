@@ -8,6 +8,7 @@
   "nourishment_record_section",
   "record",
   "section_break_bcyv",
+  "specify_animal",
   "poultry_category",
   "poultry_batch",
   "poultry_house",
@@ -26,7 +27,6 @@
    "default": "By Batch",
    "fieldname": "poultry_category",
    "fieldtype": "Select",
-   "in_list_view": 1,
    "label": "Categorize Poultry by?",
    "options": "\nBy Batch\nBy Poultry Shed",
    "reqd": 1
@@ -51,6 +51,8 @@
   {
    "fieldname": "user",
    "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "User Conducting Routine",
    "options": "User"
   },
@@ -114,6 +116,15 @@
   {
    "fieldname": "section_break_bcyv",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "specify_animal",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Specify Animal",
+   "options": "Animals",
+   "reqd": 1
   }
  ],
  "grid_page_length": 50,
@@ -121,7 +132,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-09-01 10:28:38.032062",
+ "modified": "2025-09-01 17:03:06.862158",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Feeding and Watering Tool",

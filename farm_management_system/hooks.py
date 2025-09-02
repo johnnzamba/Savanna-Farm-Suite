@@ -15,7 +15,7 @@ app_license = "mit"
 add_to_apps_screen = [
 	{
 		"name": "farm_management_system",
-		"logo": "/assets/farm_management_system/farm.svg",
+		"logo": "/assets/farm_management_system/plants.svg",
 		"title": "Savanna Farm Suite",
 		"route": "/app/farm_management_system"
 	}
@@ -30,6 +30,13 @@ app_include_js = "/assets/farm_management_system/js/banners.js"
 # include js, css files in header of web template
 # web_include_css = "/assets/farm_management_system/css/banners.css"
 # web_include_js = "/assets/farm_management_system/js/banners.js"
+sounds = [
+    {
+        "name": "success",
+        "src": "/assets/farm_management_system/sounds/sfx.mp3",
+        "volume": 0.5
+    }
+]
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "farm_management_system/public/scss/website"

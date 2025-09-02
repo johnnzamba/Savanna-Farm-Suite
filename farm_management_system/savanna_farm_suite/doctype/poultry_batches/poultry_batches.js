@@ -3,6 +3,9 @@
 
 frappe.ui.form.on("Poultry Batches", {
 	refresh(frm) {
+        if (!frm.is_new()) {
+            render_nourishment_chart(frm);
+        }
         update_batch_intro (frm);
 		if (frm.is_new() && !frm.doc.animals_received_on) {
 			frm.set_value("animals_received_on", frappe.datetime.get_today());
@@ -25,6 +28,26 @@ frappe.ui.form.on("Poultry Batches", {
 			};
 		});
 		update_average_weight(frm);
+
+        if (!frm.doc.name) return;
+        frappe.call({
+        method: "farm_management_system.savanna_farm_suite.doctype.nourishment_log.nourishment_log.get_batch_totals",
+        args: {
+            batch_name: frm.doc.name
+        },
+        callback: function(r) {
+            if (!r || !r.message) return;
+            const res = r.message;
+            if (res.total_feed !== undefined) {
+            frm.set_value("total_feed", res.total_feed || "");
+            frm.fields_dict["total_feed"] && frm.refresh_field("total_feed");
+            }
+            if (res.total_water !== undefined) {
+            frm.set_value("total_water", res.total_water || "");
+            frm.fields_dict["total_water"] && frm.refresh_field("total_water");
+            }
+        }
+        });
 	},
 
 	received_from(frm) {
@@ -222,4 +245,88 @@ function update_batch_intro(frm) {
 	} catch (err) {
 		console.error("update_batch_intro error:", err);
 	}
+}
+
+function render_nourishment_chart(frm) {
+  // ensure the daily_consumption HTML field exists on form
+  if (!frm.fields_dict || !frm.fields_dict.daily_consumption) return;
+
+  const $wrapper = $(frm.fields_dict.daily_consumption.wrapper).empty();
+
+  if (!frm.doc.name) {
+    $wrapper.html('<div>No batch selected.</div>');
+    return;
+  }
+
+  // fetch nourishment logs for this batch
+  frappe.call({
+    method: 'frappe.client.get_list',
+    args: {
+      doctype: 'Nourishment Log',
+      filters: { poultry_batch: frm.doc.name },
+      fields: ['date_of_nourishment', 'animal_feed_name', 'qty_issued', 'default_uom'],
+      order_by: 'date_of_nourishment asc',
+      limit_page_length: 1000
+    },
+    callback: function(r) {
+      const rows = r.message || [];
+      if (!rows.length) {
+        $wrapper.html('<div>No nourishment data available.</div>');
+        return;
+      }
+
+      // collect ordered unique dates (labels)
+      let dates = Array.from(new Set(rows.map(rr => rr.date_of_nourishment)));
+      dates.sort((a, b) => new Date(a) - new Date(b));
+      const feeds = {};     
+      const feedUoms = {};
+      rows.forEach(row => {
+        const d = row.date_of_nourishment;
+        const feed = (row.animal_feed_name || 'Unknown').toString();
+        const qty = parseFloat(row.qty_issued) || 0;
+        feeds[feed] = feeds[feed] || {};
+        feeds[feed][d] = (feeds[feed][d] || 0) + qty; 
+        if (!feedUoms[feed]) feedUoms[feed] = row.default_uom || '';
+      });
+
+      // build frappe.Chart style datasets
+      const labels = dates;
+      const datasets = [];
+      const colors = [];
+      const feedNames = Object.keys(feeds);
+      feedNames.forEach((feedName, idx) => {
+        const values = labels.map(dt => feeds[feedName][dt] || 0);
+        const uom = feedUoms[feedName] || '';
+        const seriesName = uom ? `${feedName} (${uom})` : feedName;
+        datasets.push({
+          name: seriesName,
+          values: values
+        });
+        const hue = Math.round(360 * (idx / Math.max(1, feedNames.length)));
+        colors.push(`hsl(${hue} 65% 45%)`);
+      });
+        const chart_id = 'nourishment_chart_' + String(frm.doc.name || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+        $wrapper.find(`#${chart_id}`).remove();
+        const $chart_div = $(`<div id="${chart_id}" style="height:360px;"></div>`).appendTo($wrapper);
+        if (frm._nourishment_chart_instance && frm._nourishment_chart_instance.wrapper) {
+        try { $(frm._nourishment_chart_instance.wrapper).empty(); } catch (e) { /* ignore */ }
+        frm._nourishment_chart_instance = null;
+        }
+        const data = {
+        labels: labels,
+        datasets: datasets
+        };
+        frm._nourishment_chart_instance = new frappe.Chart($chart_div[0], {
+        title: "Daily Nourishment Consumption",
+        data: data,
+        type: 'line',
+        height: 360,
+        colors: colors,
+        lineOptions: { dotSize: 4, hideLine: false },
+        axisOptions: { xIsSeries: true }
+        });
+
+
+    }
+  });
 }

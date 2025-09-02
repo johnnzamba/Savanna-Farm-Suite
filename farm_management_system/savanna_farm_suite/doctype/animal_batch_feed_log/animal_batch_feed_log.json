@@ -1,0 +1,59 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-02 12:08:12.631606",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "date_fed",
+  "fed_on",
+  "total_qty_issued",
+  "fed_by_user"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "date_fed",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date Fed"
+  },
+  {
+   "bold": 1,
+   "fieldname": "total_qty_issued",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Total Qty Issued",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "fed_by_user",
+   "fieldtype": "Link",
+   "label": "Fed by User?",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "fed_on",
+   "fieldtype": "Data",
+   "label": "Type of Feed Given"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-09-02 16:07:24.963914",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Animal Batch Feed Log",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

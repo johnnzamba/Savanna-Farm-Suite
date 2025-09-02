@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "NOURISH-.###.-YYYY./.MM./.DD.",
+ "autoname": "NOURISH-.###.-.YYYY./.MM./.DD.",
  "creation": "2025-09-01 10:15:00.273751",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -12,11 +12,13 @@
   "poultry_batch",
   "log_for_poultry_shed",
   "feed_issued",
+  "animal_feed_name",
   "default_uom",
   "qty_issued",
   "avg_consumption",
   "user",
-  "hydration_was_confirmed"
+  "hydration_was_confirmed",
+  "water_consumed"
  ],
  "fields": [
   {
@@ -97,6 +99,24 @@
    "fieldname": "hydration_was_confirmed",
    "fieldtype": "Check",
    "label": "Hydration was Confirmed"
+  },
+  {
+   "allow_on_submit": 1,
+   "bold": 1,
+   "fetch_from": "feed_issued.feed_name",
+   "fetch_if_empty": 1,
+   "fieldname": "animal_feed_name",
+   "fieldtype": "Data",
+   "label": "Animal Feed Name",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.hydration_was_confirmed == 1",
+   "fieldname": "water_consumed",
+   "fieldtype": "Float",
+   "label": "Total Amount of Water Consumed",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -104,7 +124,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-01 10:32:32.833780",
+ "modified": "2025-09-02 16:29:19.644151",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Nourishment Log",
@@ -126,9 +146,12 @@
   }
  ],
  "row_format": "Dynamic",
+ "search_fields": "feed_issued, user, poultry_batch, log_for_poultry_shed",
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
+ "title_field": "poultry_batch",
  "track_changes": 1,
  "track_seen": 1,
  "track_views": 1

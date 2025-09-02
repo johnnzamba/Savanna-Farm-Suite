@@ -7,7 +7,9 @@
  "engine": "InnoDB",
  "field_order": [
   "animal_feed",
+  "animal_feed_name",
   "feed_default_uom",
+  "current_available_stock",
   "qty"
  ],
  "fields": [
@@ -15,6 +17,7 @@
    "bold": 1,
    "fieldname": "animal_feed",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Animal Feed",
    "options": "Animal Feeds"
   },
@@ -29,7 +32,28 @@
   {
    "fieldname": "feed_default_uom",
    "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Default UOM",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.animal_feed",
+   "fetch_from": "animal_feed.feed_name",
+   "fetch_if_empty": 1,
+   "fieldname": "animal_feed_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Animal Feed Name",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "current_available_stock",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Current Available Stock",
    "read_only": 1
   }
  ],
@@ -37,7 +61,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-09-01 09:49:24.851556",
+ "modified": "2025-09-02 11:40:52.985979",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Nourishment Table",

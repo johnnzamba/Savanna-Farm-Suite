@@ -1,0 +1,156 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "TREAT-.###.-.YYYY./.MM.",
+ "creation": "2025-09-02 19:27:03.187917",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_vl09",
+  "amended_from",
+  "specify_type_of_treatment",
+  "doctor",
+  "treatment_date",
+  "poultry_batch_under_treatment",
+  "vaccine_used",
+  "qty_vaccine",
+  "doctors_purchase_order_based_on_appointment_fee",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_vl09",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Treatment and Vaccination Logs",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "bold": 1,
+   "fieldname": "doctor",
+   "fieldtype": "Link",
+   "label": "Treatment to be Undertaken by who?",
+   "options": "Doctors"
+  },
+  {
+   "fieldname": "treatment_date",
+   "fieldtype": "Date",
+   "label": "Treatment Undertaken On?"
+  },
+  {
+   "bold": 1,
+   "fieldname": "poultry_batch_under_treatment",
+   "fieldtype": "Link",
+   "label": "Poultry Batch Under Treatment",
+   "options": "Poultry Batches",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "bold": 1,
+   "fieldname": "vaccine_used",
+   "fieldtype": "Link",
+   "label": "Vaccine Used",
+   "options": "Animal Vaccines"
+  },
+  {
+   "allow_on_submit": 1,
+   "bold": 1,
+   "fieldname": "qty_vaccine",
+   "fieldtype": "Float",
+   "label": "Quantity of Vaccine Used",
+   "precision": "3"
+  },
+  {
+   "bold": 1,
+   "default": "Vaccination",
+   "fieldname": "specify_type_of_treatment",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Specify Type of Treatment",
+   "options": "\nBooster supplement\nVaccination\nStandard Medication",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "description": "CLICK to Review the Purchase Order.",
+   "fieldname": "doctors_purchase_order_based_on_appointment_fee",
+   "fieldtype": "Link",
+   "label": "Doctor's Purchase Order based on Appointment Fee",
+   "options": "Purchase Order",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "bold": 1,
+   "default": "Upcoming",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "\nUpcoming\nAppointment Set for This Month\nAppointment Set for This Week\nAppointment Scheduled for Today\nAppointment Passed",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-09-03 12:35:28.079288",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Treatment and Vaccination Logs",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "doctor, vaccine_used",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Yellow",
+   "title": "Upcoming"
+  },
+  {
+   "color": "Purple",
+   "title": "Appointment Set for This Month"
+  },
+  {
+   "color": "Pink",
+   "title": "Appointment Set for This Week"
+  },
+  {
+   "color": "Green",
+   "title": "Appointment Scheduled for Today"
+  },
+  {
+   "color": "Red",
+   "title": "Appointment Passed"
+  }
+ ],
+ "title_field": "doctor"
+}

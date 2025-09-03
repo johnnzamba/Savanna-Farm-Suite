@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-02 22:39:29.968097",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "treatment_log_no",
+  "vaccine_used",
+  "quantity_of_vaccine_used"
+ ],
+ "fields": [
+  {
+   "fieldname": "treatment_log_no",
+   "fieldtype": "Link",
+   "is_virtual": 1,
+   "label": "Treatment Log No",
+   "options": "Treatment and Vaccination Logs"
+  },
+  {
+   "fieldname": "vaccine_used",
+   "fieldtype": "Link",
+   "is_virtual": 1,
+   "label": "Vaccine Used",
+   "options": "Animal Vaccines"
+  },
+  {
+   "bold": 1,
+   "fieldname": "quantity_of_vaccine_used",
+   "fieldtype": "Float",
+   "is_virtual": 1,
+   "label": "Quantity of Vaccine Used",
+   "non_negative": 1,
+   "precision": "3"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-09-02 22:43:04.017931",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Vaccines Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

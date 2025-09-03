@@ -1,46 +1,38 @@
 {
  "actions": [],
  "allow_import": 1,
- "autoname": "format: AF/{###}",
- "creation": "2025-08-31 07:08:19.809393",
+ "autoname": "AVCC-.###",
+ "creation": "2025-09-02 19:42:40.887815",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "important_feed_details_tab",
   "specify_feed_details_section",
-  "feed_name",
+  "vaccine_name",
+  "vaccine_administered_to_which_animals",
   "uom",
   "feed_supplier",
   "column_break_dmcp",
-  "cost_of_the_feed",
+  "cost_of_the_vaccine",
   "important_notes_for_this_feed",
-  "image_of_feed",
+  "image_of_vaccine",
   "auto_reorder",
   "reorder_level",
   "reorder_qty",
-  "animal_feed_formulation_tab",
-  "animal_feed_formulation",
-  "table_bytk",
   "stock_level_and_costs_tab",
-  "history_of_feed_purchases",
+  "history_of_vax_purchases",
   "html_dgyh"
  ],
  "fields": [
   {
-   "fieldname": "specify_feed_details_section",
-   "fieldtype": "Section Break",
-   "label": "Specify Feed Details"
+   "fieldname": "important_feed_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Important Vaccine Details"
   },
   {
-   "bold": 1,
-   "description": "Example: Oatmeal",
-   "fieldname": "feed_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Name of the Feed",
-   "placeholder": "Growers",
-   "reqd": 1,
-   "unique": 1
+   "fieldname": "specify_feed_details_section",
+   "fieldtype": "Section Break",
+   "label": "Specify Vaccine Details"
   },
   {
    "bold": 1,
@@ -48,7 +40,7 @@
    "description": "Multiple Selection Allowed.",
    "fieldname": "uom",
    "fieldtype": "Table MultiSelect",
-   "label": "Feed Administered in which UOM?",
+   "label": "Vaccine Administered in which UOM?",
    "options": "Animal Feeds UOM",
    "reqd": 1
   },
@@ -57,7 +49,7 @@
    "description": "Multiple Selection Allowed.",
    "fieldname": "feed_supplier",
    "fieldtype": "Table MultiSelect",
-   "label": "Select Supplier(s) for this Feed",
+   "label": "Select Supplier(s) for this Vaccine",
    "options": "Animal Feeds Suppliers"
   },
   {
@@ -66,62 +58,10 @@
   },
   {
    "bold": 1,
-   "fieldname": "cost_of_the_feed",
-   "fieldtype": "Currency",
-   "label": "Cost of the Feed",
-   "non_negative": 1,
-   "precision": "3"
-  },
-  {
-   "bold": 1,
    "description": "EXAMPLE: Toxicity/Anti-Nutritional Factors",
    "fieldname": "important_notes_for_this_feed",
    "fieldtype": "Small Text",
-   "label": "Important Notes for this Feed"
-  },
-  {
-   "fieldname": "important_feed_details_tab",
-   "fieldtype": "Tab Break",
-   "label": "Important Feed Details"
-  },
-  {
-   "fieldname": "animal_feed_formulation_tab",
-   "fieldtype": "Tab Break",
-   "label": "Animal Feed Formulation"
-  },
-  {
-   "description": "This section links specific animals to feed formulas created for them to meet the nutritional demands of the target animal at a particular life stage.",
-   "fieldname": "animal_feed_formulation",
-   "fieldtype": "Section Break",
-   "label": "Animal & Feed Formulation \ud83d\udc16\ud83d\udc14\ud83d\udc04"
-  },
-  {
-   "bold": 1,
-   "description": "Note: Feeding requirements and methods may vary depending on the type of animal.",
-   "fieldname": "table_bytk",
-   "fieldtype": "Table",
-   "options": "Animal and Feed Formulation"
-  },
-  {
-   "bold": 1,
-   "fieldname": "image_of_feed",
-   "fieldtype": "Attach Image",
-   "label": "Image of Animal Feed (ATTACH)"
-  },
-  {
-   "depends_on": "eval:doc.name",
-   "fieldname": "stock_level_and_costs_tab",
-   "fieldtype": "Tab Break",
-   "label": "Stock Level and Costs"
-  },
-  {
-   "fieldname": "history_of_feed_purchases",
-   "fieldtype": "HTML",
-   "label": "History of Purchases made"
-  },
-  {
-   "fieldname": "html_dgyh",
-   "fieldtype": "HTML"
+   "label": "Important Notes on this Vaccine"
   },
   {
    "bold": 1,
@@ -150,17 +90,70 @@
    "label": "Set  Quantity to Re-Order",
    "mandatory_depends_on": "eval:doc.reorder_level",
    "precision": "3"
+  },
+  {
+   "depends_on": "eval:doc.name",
+   "fieldname": "stock_level_and_costs_tab",
+   "fieldtype": "Tab Break",
+   "label": "Stock Level and Costs"
+  },
+  {
+   "fieldname": "html_dgyh",
+   "fieldtype": "HTML"
+  },
+  {
+   "bold": 1,
+   "description": "Example: IVERSHOT",
+   "fieldname": "vaccine_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name of the Vaccine",
+   "placeholder": "Growers",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "cost_of_the_vaccine",
+   "fieldtype": "Currency",
+   "label": "Cost of the Vaccine",
+   "non_negative": 1,
+   "precision": "3"
+  },
+  {
+   "bold": 1,
+   "fieldname": "image_of_vaccine",
+   "fieldtype": "Attach Image",
+   "label": "Image of Animal Vaccine (ATTACH)"
+  },
+  {
+   "fieldname": "history_of_vax_purchases",
+   "fieldtype": "HTML",
+   "label": "History of Purchases made"
+  },
+  {
+   "bold": 1,
+   "description": "MULTIPLE SELECTION ALLOWED.",
+   "fieldname": "vaccine_administered_to_which_animals",
+   "fieldtype": "Table MultiSelect",
+   "label": "Vaccine Administered to which Animals?",
+   "options": "Animals Multiselect Tab"
   }
  ],
  "grid_page_length": 50,
- "image_field": "image_of_feed",
+ "image_field": "image_of_vaccine",
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-09-02 18:08:27.541007",
+ "links": [
+  {
+   "link_doctype": "Treatment and Vaccination Logs",
+   "link_fieldname": "vaccine_used"
+  }
+ ],
+ "modified": "2025-09-02 22:14:55.026472",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
- "name": "Animal Feeds",
- "naming_rule": "Expression",
+ "name": "Animal Vaccines",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
@@ -177,9 +170,9 @@
   }
  ],
  "row_format": "Dynamic",
- "search_fields": "feed_name,cost_of_the_feed",
+ "search_fields": "vaccine_name,cost_of_the_vaccine",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "feed_name"
+ "title_field": "vaccine_name"
 }

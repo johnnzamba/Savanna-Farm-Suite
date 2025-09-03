@@ -32,6 +32,9 @@
   "sales_revenue",
   "poultry_batch_logs_tab",
   "important_logs_section",
+  "treatment_and_vaccination_log",
+  "treatment_chart",
+  "feeding_section_section",
   "nourishment_table",
   "daily_consumption"
  ],
@@ -211,12 +214,13 @@
   {
    "fieldname": "poultry_batch_logs_tab",
    "fieldtype": "Tab Break",
-   "label": "Batch Logs"
+   "label": "Important Batch Logs"
   },
   {
+   "collapsible": 1,
    "fieldname": "important_logs_section",
    "fieldtype": "Section Break",
-   "label": "Important Logs"
+   "label": "Treatment Section"
   },
   {
    "allow_on_submit": 1,
@@ -257,14 +261,38 @@
    "fieldtype": "HTML",
    "label": "Daily Feed Consumption",
    "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "treatment_and_vaccination_log",
+   "fieldtype": "Table",
+   "label": "Treatment and Vaccination Log",
+   "options": "Treatment Table",
+   "read_only": 1
+  },
+  {
+   "fieldname": "treatment_chart",
+   "fieldtype": "HTML",
+   "label": "Treatment Chart"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "feeding_section_section",
+   "fieldtype": "Section Break",
+   "label": "Feeding Section"
   }
  ],
  "grid_page_length": 50,
  "image_field": "image_of_animal_batch",
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2025-09-02 15:38:12.950756",
+ "links": [
+  {
+   "link_doctype": "Treatment and Vaccination Logs",
+   "link_fieldname": "poultry_batch_under_treatment"
+  }
+ ],
+ "modified": "2025-09-02 22:14:05.951368",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Poultry Batches",

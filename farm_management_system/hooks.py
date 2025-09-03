@@ -48,6 +48,24 @@ sounds = [
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
 
+fixtures = [
+    {
+        "dt": "Workflow State"
+    },
+    {
+       "dt": "Workflow Action Master"
+    },
+    {
+        "dt": "Workflow",
+        "filters": [["name", "in", ["Treatment Process"]]]
+
+    },
+    {
+        "dt": "Email Template",
+        "filters": [["name", "in", ["Doctor's Notification"]]]
+    }
+]
+
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}

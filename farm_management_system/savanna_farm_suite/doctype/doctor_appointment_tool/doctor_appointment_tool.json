@@ -1,0 +1,86 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-02 22:22:19.944043",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "specify_doctor",
+  "column_break_xejy",
+  "filter_appointments_from_date",
+  "to_date",
+  "section_break_oact",
+  "html_riid",
+  "table_mfeb"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "specify_doctor",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Specify Doctor",
+   "options": "Doctors",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_xejy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "filter_appointments_from_date",
+   "fieldtype": "Date",
+   "label": "Filter Appointments From Date?"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.filter_appointments_from_date",
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date (OPTIONAL)"
+  },
+  {
+   "description": "Important: Only selected doctor appointments will be retrieved.",
+   "fieldname": "section_break_oact",
+   "fieldtype": "Section Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "html_riid",
+   "fieldtype": "HTML"
+  },
+  {
+   "bold": 1,
+   "fieldname": "table_mfeb",
+   "fieldtype": "Table",
+   "options": "Vaccines Table",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-09-02 22:43:59.338831",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Doctor Appointment Tool",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

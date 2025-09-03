@@ -1,0 +1,135 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:doc_name",
+ "creation": "2025-09-02 19:12:01.711003",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "important_masters_section",
+  "doc_name",
+  "doctors_email_address",
+  "doc_mobile",
+  "column_break_pyny",
+  "specializes_in",
+  "doctors_fee_per_appointment",
+  "doctors_appointment_details_section",
+  "fetch_latest_appointments",
+  "table_ihua",
+  "section_break_obcy",
+  "doctors_activity_chart"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "doc_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Doctor's Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "description": "Multiple Selection Allowed.",
+   "fieldname": "specializes_in",
+   "fieldtype": "Table MultiSelect",
+   "label": "Which animals does the doctor specialize in?",
+   "options": "Animals Multiselect Tab"
+  },
+  {
+   "bold": 1,
+   "fieldname": "doctors_email_address",
+   "fieldtype": "Data",
+   "label": "Doctor's Email Address",
+   "placeholder": "good doctor@farm.ac.ke"
+  },
+  {
+   "description": "FORMAT: +254759XXXXXX ",
+   "fieldname": "doc_mobile",
+   "fieldtype": "Data",
+   "label": "Doctor's Mobile No:",
+   "placeholder": "+254116..."
+  },
+  {
+   "fieldname": "column_break_pyny",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "description": "NOTE: Subject to Change.",
+   "fieldname": "doctors_fee_per_appointment",
+   "fieldtype": "Currency",
+   "label": "Doctor's Fee per Appointment",
+   "non_negative": 1
+  },
+  {
+   "fieldname": "important_masters_section",
+   "fieldtype": "Section Break",
+   "label": "Important Details"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "doctors_appointment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Doctor's Appointment Details"
+  },
+  {
+   "bold": 1,
+   "fieldname": "table_ihua",
+   "fieldtype": "Table",
+   "options": "Doc Treatment Table",
+   "read_only": 1
+  },
+  {
+   "fieldname": "doctors_activity_chart",
+   "fieldtype": "HTML",
+   "label": "Doctor's Activity Chart"
+  },
+  {
+   "bold": 1,
+   "fieldname": "fetch_latest_appointments",
+   "fieldtype": "Button",
+   "label": "Fetch Latest Appointments"
+  },
+  {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:!doc.table_ihua",
+   "description": "Highlighted days are appointment dates (hover for details).\n",
+   "fieldname": "section_break_obcy",
+   "fieldtype": "Section Break",
+   "label": "Appointment Calendar"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Treatment and Vaccination Logs",
+   "link_fieldname": "doctor"
+  }
+ ],
+ "modified": "2025-09-03 14:00:51.775408",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Doctors",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

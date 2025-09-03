@@ -1,0 +1,74 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "question-sign",
+  "modified": "2025-08-30 22:13:54.975949",
+  "name": "Pending",
+  "style": "",
+  "workflow_state_name": "Pending"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "ok-sign",
+  "modified": "2025-08-30 22:13:54.977101",
+  "name": "Approved",
+  "style": "Success",
+  "workflow_state_name": "Approved"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "remove",
+  "modified": "2025-08-30 22:13:54.978134",
+  "name": "Rejected",
+  "style": "Danger",
+  "workflow_state_name": "Rejected"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2025-09-02 20:56:54.103580",
+  "name": "Upcoming",
+  "style": "Info",
+  "workflow_state_name": "Upcoming"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2025-09-02 20:58:21.927729",
+  "name": "Appointment Set for This Month",
+  "style": "Warning",
+  "workflow_state_name": "Appointment Set for This Month"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2025-09-02 20:58:54.772923",
+  "name": "Appointment Set for This Week",
+  "style": "Danger",
+  "workflow_state_name": "Appointment Set for This Week"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2025-09-02 21:01:19.503162",
+  "name": "Appointment Passed",
+  "style": "Inverse",
+  "workflow_state_name": "Appointment Passed"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2025-09-02 21:00:43.758935",
+  "name": "Appointment Scheduled for Today",
+  "style": "Success",
+  "workflow_state_name": "Appointment Scheduled for Today"
+ }
+]

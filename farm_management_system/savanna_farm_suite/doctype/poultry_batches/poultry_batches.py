@@ -153,3 +153,117 @@ def generate_ai_image_for_batch(doc_name, animal_batch):
             f"Error generating AI image for {animal_batch}: {str(e)}",
             "Poultry Batches AI Image Generation"
         )
+
+
+import frappe
+from frappe import _
+from datetime import datetime
+
+@frappe.whitelist()
+def get_treatment_chart_data(poultry_batch_name: str):
+    """
+    Return grouped treatment/vaccination data for charting.
+
+    Returns:
+    {
+      "dates": ["2025-09-17", "2025-09-15", ...],            # latest -> oldest
+      "vaccines": ["Newcastle Vaccine", "VACC-001", ...],
+      "series": { "Newcastle Vaccine": [10, 0, ...], ... }   # aligned with dates
+    }
+    """
+    if not poultry_batch_name:
+        return {"dates": [], "vaccines": [], "series": {}}
+
+    # fetch relevant fields explicitly so we don't guess on client side
+    logs = frappe.get_all(
+        "Treatment and Vaccination Logs",
+        filters={"poultry_batch_under_treatment": poultry_batch_name},
+        fields=[
+            "name",
+            "treatment_date",
+            "vaccine_used",
+            "qty_vaccine",
+            "creation"
+        ],
+        order_by="creation desc",
+        limit_page_length=2000
+    )
+
+    # helper to normalize date to YYYY-MM-DD
+    def norm_date(val):
+        if not val:
+            return None
+        if isinstance(val, str):
+            s = val.strip()
+            # prefer first 10 chars if ISO-like
+            cand = s[:10]
+            try:
+                if len(cand) == 10:
+                    datetime.strptime(cand, "%Y-%m-%d")
+                    return cand
+            except Exception:
+                pass
+            try:
+                d = datetime.fromisoformat(s)
+                return d.strftime("%Y-%m-%d")
+            except Exception:
+                pass
+            try:
+                d = frappe.utils.data.get_datetime(s)
+                return d.strftime("%Y-%m-%d")
+            except Exception:
+                return None
+        else:
+            # likely a datetime object
+            try:
+                return val.strftime("%Y-%m-%d")
+            except Exception:
+                return None
+
+    # Build grouped map date -> vaccine -> qty
+    grouped = {}
+    vaccine_set = set()
+
+    for r in logs:
+        # prefer human label if link field stores name in <field>_name
+        vac = (r.get("vaccine_used") or "") 
+        vac = vac.strip() if isinstance(vac, str) else str(vac)
+        if not vac:
+            vac = "(unknown)"
+
+        # normalize date preferring treatment_date, fallback creation
+        dt = norm_date(r.get("treatment_date")) or norm_date(r.get("creation")) or None
+        if not dt:
+            # ignore entries with no date at all (or you can choose to set to today)
+            continue
+
+        qty = r.get("qty_vaccine") or 0
+        try:
+            qty = float(qty)
+        except Exception:
+            try:
+                qty = float(str(qty).strip() or 0)
+            except Exception:
+                qty = 0.0
+
+        grouped.setdefault(dt, {})
+        grouped[dt][vac] = grouped[dt].get(vac, 0.0) + qty
+        vaccine_set.add(vac)
+
+    if not grouped:
+        return {"dates": [], "vaccines": [], "series": {}}
+
+    # Dates sorted latest -> oldest
+    dates = sorted(list(grouped.keys()), reverse=True)
+
+    vaccines = sorted(list(vaccine_set))  # deterministically order vaccines (alphabetical)
+
+    # Build series: vaccine -> array of qty aligned with dates
+    series = {}
+    for vac in vaccines:
+        arr = []
+        for d in dates:
+            arr.append(round(grouped.get(d, {}).get(vac, 0.0), 6))
+        series[vac] = arr
+
+    return {"dates": dates, "vaccines": vaccines, "series": series}

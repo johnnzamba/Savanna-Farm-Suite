@@ -8,11 +8,13 @@
  "field_order": [
   "treatment_date",
   "animal_vaccine_issued",
+  "treatment_conducted_by",
   "quantity_of_vaccine_issued",
   "approximate_intake_per_animal"
  ],
  "fields": [
   {
+   "allow_on_submit": 1,
    "bold": 1,
    "fieldname": "treatment_date",
    "fieldtype": "Date",
@@ -20,33 +22,44 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "bold": 1,
    "fieldname": "animal_vaccine_issued",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Animal Vaccine Issued",
-   "options": "Animal Vaccines",
-   "read_only": 1
+   "options": "Animal Vaccines"
   },
   {
+   "allow_on_submit": 1,
    "bold": 1,
    "fieldname": "quantity_of_vaccine_issued",
    "fieldtype": "Float",
+   "hidden": 1,
    "label": "Quantity of Vaccine Issued",
-   "precision": "3"
+   "precision": "0"
   },
   {
+   "allow_on_submit": 1,
    "bold": 1,
    "fieldname": "approximate_intake_per_animal",
    "fieldtype": "Float",
-   "label": "Approximate Intake Per Animal",
-   "read_only": 1
+   "hidden": 1,
+   "label": "Approximate Intake Per Animal"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "treatment_conducted_by",
+   "fieldtype": "Link",
+   "label": "Treatment Conducted By?",
+   "options": "Doctors"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-09-02 20:43:24.243149",
+ "modified": "2025-09-03 15:10:32.391492",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Treatment Table",

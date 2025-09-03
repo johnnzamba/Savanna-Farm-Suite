@@ -263,6 +263,7 @@
    "read_only": 1
   },
   {
+   "allow_on_submit": 1,
    "bold": 1,
    "fieldname": "treatment_and_vaccination_log",
    "fieldtype": "Table",
@@ -285,14 +286,17 @@
  "grid_page_length": 50,
  "image_field": "image_of_animal_batch",
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
  "links": [
   {
    "link_doctype": "Treatment and Vaccination Logs",
    "link_fieldname": "poultry_batch_under_treatment"
+  },
+  {
+   "link_doctype": "Nourishment Log",
+   "link_fieldname": "poultry_batch"
   }
  ],
- "modified": "2025-09-02 22:14:05.951368",
+ "modified": "2025-09-03 15:13:42.664122",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Poultry Batches",
@@ -309,7 +313,6 @@
    "report": 1,
    "role": "System Manager",
    "share": 1,
-   "submit": 1,
    "write": 1
   }
  ],

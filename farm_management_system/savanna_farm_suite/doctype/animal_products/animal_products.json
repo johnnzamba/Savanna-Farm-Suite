@@ -1,0 +1,92 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:animal_product_name",
+ "creation": "2025-09-04 10:48:33.930283",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "animal_product_name",
+  "default_unit_of_measure",
+  "product_selling_price",
+  "product_tied_to_which_animal",
+  "products_image_if_any"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "fieldname": "animal_product_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Animal Product Name",
+   "placeholder": "EXAMPLE: Chicken Meat",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "fieldname": "product_selling_price",
+   "fieldtype": "Currency",
+   "label": "Product Selling Price",
+   "non_negative": 1,
+   "precision": "3",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "fieldname": "product_tied_to_which_animal",
+   "fieldtype": "Link",
+   "label": "Product Tied to which Animal?",
+   "options": "Animals",
+   "reqd": 1
+  },
+  {
+   "fieldname": "products_image_if_any",
+   "fieldtype": "Attach Image",
+   "label": "Product's Image (If ANY)"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "fieldname": "default_unit_of_measure",
+   "fieldtype": "Link",
+   "label": "Default Unit of Measure",
+   "options": "UOM",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "image_field": "products_image_if_any",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-04 11:03:54.889010",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Animal Products",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "search_fields": "animal_product_name, product_tied_to_which_animal ",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "animal_product_name"
+}

@@ -4,6 +4,7 @@
 frappe.ui.form.on("Poultry Batches", {
 	refresh(frm) {
         if (!frm.is_new()) {
+            render_collection_chart(frm);
             render_nourishment_chart(frm);
         }
         update_batch_intro (frm);
@@ -137,11 +138,66 @@ frappe.ui.form.on("Poultry Batches", {
 	}
 });
 
+function render_collection_chart(frm) {
+    const wrapper = frm.fields_dict["collection_tracker"].$wrapper;
+    wrapper.empty().addClass("text-center").append(`<div class="text-muted">${__("Loading...")}</div>`);
+
+    frappe.call({
+        method: "farm_management_system.savanna_farm_suite.doctype.poultry_batches.poultry_batches.get_collection_data",
+        args: {
+            batch_name: frm.doc.name
+        },
+        callback: function(r) {
+            wrapper.empty(); // Clear loading message
+
+            if (!r.message || !r.message.labels || r.message.labels.length === 0) {
+                wrapper.html(`<div class="text-center text-muted" style="line-height: 150px;">
+                    ${__("No Product Collections Logged Yet")}
+                </div>`);
+                return;
+            }
+
+            const data = r.message;
+            const tooltipData = data.tooltip_data || {};
+
+            const chart = new frappe.Chart(wrapper.get(0), {
+                title: "Daily Product Collections",
+                data: {
+                    labels: data.labels,
+                    datasets: data.datasets
+                },
+                type: 'bar',
+                height: 250,
+                colors: ['#7cd6fd', '#743ee2', '#ffa3ef', '#5e64ff', '#ff5858', '#00e096'],
+                is_stacked: 1, // This creates the stacked bar chart
+                tooltipOptions: {
+                    formatTooltipY: (value, label, index, dataset_index) => {
+                        // `label` is the x-axis value (date)
+                        // `dataset_index` corresponds to the product series
+                        if (!data.datasets[dataset_index]) return value;
+                        
+                        const productName = data.datasets[dataset_index].name;                        
+                        if (tooltipData[productName] && tooltipData[productName][label]) {
+                            return tooltipData[productName][label];
+                        }
+                        return value;
+                    }
+                }
+            });
+        }
+    });
+}
 
 function syncPoultryTreatmentLogs(frm) {
 	const dfd = $.Deferred();
 
 	if (!frm.doc || !frm.doc.name) {
+		dfd.resolve();
+		return dfd.promise();
+	}
+
+	// Do not sync if the table is already populated, unless it's a new document
+	if (!frm.is_new() && (frm.doc.treatment_and_vaccination_log || []).length > 0) {
 		dfd.resolve();
 		return dfd.promise();
 	}
@@ -179,7 +235,7 @@ function syncPoultryTreatmentLogs(frm) {
 				limit_page_length: 1000
 			},
 			callback: function(r) {
-				p.resolve(r.message || []);
+				p.resolve((r.message || []).filter(log => log.vaccine_used));
 			},
 			error: function() { p.resolve([]); }
 		});
@@ -194,6 +250,7 @@ function syncPoultryTreatmentLogs(frm) {
 			const L = logs[i];
 			const dt = L.treatment_date ? String(L.treatment_date).substr(0,10) : '';
 			const vaccine = L.vaccine_used ? String(L.vaccine_used) : '';
+			if (!vaccine) continue; // Skip logs with no vaccine
 			const key = dt + '||' + vaccine;
 			if (seen.has(key)) continue;
 			seen.add(key);
@@ -202,6 +259,10 @@ function syncPoultryTreatmentLogs(frm) {
 
 		// Build a map for vaccine display -> Animal Vaccines.name
 		const distinctVaccines = Array.from(new Set(uniqueLogs.map(l => String(l.vaccine_used || '')).filter(Boolean)));
+		if (distinctVaccines.length === 0) {
+			dfd.resolve();
+			return;
+		}
 		function resolveVaccineNames(values) {
 			const d = $.Deferred();
 			const result = {};
@@ -370,8 +431,10 @@ function renderTreatmentChart(frm) {
 	}).then(r => {
 		const payload = (r && r.message) || { dates: [], vaccines: [], series: {} };
 		const dates = payload.dates || [];
-		const vaccines = payload.vaccines || [];
+		let vaccines = payload.vaccines || [];
 		const series = payload.series || {};
+
+		vaccines = vaccines.filter(v => v && v.trim() !== '');
 
 		if (!dates.length || !vaccines.length) {
 			$wrap.html('<div class="text-muted">No treatment / vaccination logs found for this batch.</div>');
@@ -394,39 +457,68 @@ function renderTreatmentChart(frm) {
 			return `hsl(${h}, ${sat}%, ${light}%)`;
 		}
 
-		// Fetch UOM for each vaccine from Animal Vaccines doc (reads first row of child table "uom")
-		function fetchUOMMap(vaccineNames) {
-			// returns a Promise resolving to { vaccineName: uomString, ... }
-			const calls = vaccineNames.map(v => {
-				// try to get the Animal Vaccines doc named `v`
-				return frappe.call({
-					method: 'frappe.client.get',
-					args: { doctype: 'Animal Vaccines', name: v },
-				}).then(res => {
-					const msg = (res && res.message) || {};
-					// Look for child table `uom` (table-multiselect), take first row
-					let u = null;
-					const ct = msg.uom || msg.uoms || msg.uom_table || null;
-					if (Array.isArray(ct) && ct.length) {
-						const first = ct[0] || {};
-						u = first.uom || first.uom_name || first.unit || first.uom_unit || first.label || null;
-					}
-					// also try common direct field
-					if (!u) {
-						u = msg.uom || msg.unit || msg.default_uom || null;
-					}
-					return [v, (u && String(u).trim()) || 'unit(s)'];
-				}).catch(() => {
-					// can't fetch this doc — fallback to generic
-					return [v, 'unit(s)'];
+		// Fetch metadata (display name and UOM) for each vaccine from Animal Vaccines doc
+		function fetchVaccineMeta(vaccineNames) {
+			const d = $.Deferred();
+			const validVaccineNames = vaccineNames.filter(v => v && v !== '(unknown)');
+
+			if (validVaccineNames.length === 0) {
+				const uomMap = {};
+				const displayNameMap = {};
+				vaccineNames.forEach(v => {
+					displayNameMap[v] = v;
+					uomMap[v] = 'unit(s)';
 				});
+				return $.Deferred().resolve({ uomMap, displayNameMap }).promise();
+			}
+
+			frappe.call({
+				method: 'frappe.client.get_list',
+				args: {
+					doctype: 'Animal Vaccines',
+					filters: { name: ['in', validVaccineNames] },
+					fields: ['name', 'vaccine_name', 'uom'],
+					limit_page_length: validVaccineNames.length
+				},
+				callback: function(r) {
+					const uomMap = {};
+					const displayNameMap = {};
+					const found = new Set();
+
+					(r.message || []).forEach(doc => {
+						found.add(doc.name);
+						displayNameMap[doc.name] = doc.vaccine_name || doc.name;
+						uomMap[doc.name] = doc.uom || 'unit(s)';
+					});
+
+					vaccineNames.forEach(v => {
+						if (!displayNameMap[v]) {
+							displayNameMap[v] = v;
+							uomMap[v] = 'unit(s)';
+						}
+					});
+
+					d.resolve({ uomMap, displayNameMap });
+				},
+				error: function() {
+					const uomMap = {};
+					const displayNameMap = {};
+					vaccineNames.forEach(v => {
+						displayNameMap[v] = v;
+						uomMap[v] = 'unit(s)';
+					});
+					d.resolve({ uomMap, displayNameMap });
+				}
 			});
-			return Promise.all(calls).then(pairs => Object.fromEntries(pairs));
+
+			return d.promise();
 		}
 
-		// Once UOM map is ready, render chart (so tooltip shows correct unit)
-		fetchUOMMap(vaccines).then(uomMap => {
-			console.debug('uomMap for vaccines', uomMap);
+		// Once metadata map is ready, render chart (so tooltip shows correct unit and display name)
+		fetchVaccineMeta(vaccines).then(meta => {
+			const uomMap = meta.uomMap || {};
+			const displayNameMap = meta.displayNameMap || {};
+			console.debug('vaccine meta', meta);
 
 			// compute max across series
 			let maxQty = 0;
@@ -502,22 +594,22 @@ function renderTreatmentChart(frm) {
 					rect.setAttribute('y', String(y));
 					rect.setAttribute('width', String(perVaccineWidth));
 					rect.setAttribute('height', String(Math.max(1, height)));
-					const fill = colorForVaccine(vac);
+					const fill = colorForVaccine(displayNameMap[vac] || vac);
 					rect.setAttribute('fill', fill);
 					rect.setAttribute('rx', '3');
 					rect.setAttribute('ry', '3');
 					rect.setAttribute('data-date', dt);
-					rect.setAttribute('data-vaccine', vac);
+					rect.setAttribute('data-vaccine', displayNameMap[vac] || vac);
 					rect.setAttribute('data-qty', String(qty));
 					rect.style.cursor = 'pointer';
 					svg.appendChild(rect);
 
 					rect.addEventListener('mouseenter', (ev) => {
 						const q = rect.getAttribute('data-qty');
-						const v = rect.getAttribute('data-vaccine');
 						const d = rect.getAttribute('data-date');
-						const uom = (uomMap && uomMap[v]) ? uomMap[v] : 'unit(s)';
-						tooltipEl.innerHTML = `<strong>${v}</strong><div style="opacity:0.85;margin-top:6px">${q} ${uom}</div><div style="margin-top:6px;font-size:0.82rem;color:#666">${d}</div>`;
+						const display = displayNameMap[vac] || vac;
+						const uom = (uomMap && uomMap[vac]) ? uomMap[vac] : 'unit(s)';
+						tooltipEl.innerHTML = `<strong>${display}</strong><div style="opacity:0.85;margin-top:6px">${q} ${uom}</div><div style="margin-top:6px;font-size:0.82rem;color:#666">${d}</div>`;
 						tooltipEl.style.display = 'block';
 						positionTooltip(ev.clientX, ev.clientY);
 					});
@@ -526,10 +618,10 @@ function renderTreatmentChart(frm) {
 					rect.addEventListener('click', (ev) => {
 						ev.stopPropagation();
 						const q = rect.getAttribute('data-qty');
-						const v = rect.getAttribute('data-vaccine');
 						const d = rect.getAttribute('data-date');
-						const uom = (uomMap && uomMap[v]) ? uomMap[v] : 'unit(s)';
-						tooltipEl.innerHTML = `<strong>${v}</strong><div style="opacity:0.85;margin-top:6px">${q} ${uom}</div><div style="margin-top:6px;font-size:0.82rem;color:#666">${d}</div>`;
+						const display = displayNameMap[vac] || vac;
+						const uom = (uomMap && uomMap[vac]) ? uomMap[vac] : 'unit(s)';
+						tooltipEl.innerHTML = `<strong>${display}</strong><div style=\"opacity:0.85;margin-top:6px\">${q} ${uom}</div><div style=\"margin-top:6px;font-size:0.82rem;color:#666\">${d}</div>`;
 						tooltipEl.style.display = 'block';
 						positionTooltip(ev.clientX, ev.clientY);
 						setTimeout(()=> { tooltipEl.style.display = 'none'; }, 3000);
@@ -553,7 +645,7 @@ function renderTreatmentChart(frm) {
 			vaccines.forEach(v => {
 				const sw = document.createElement('div');
 				sw.className = 'legend-item';
-				sw.innerHTML = `<span class="legend-swatch" style="background:${colorForVaccine(v)}"></span><span>${v}</span>`;
+				sw.innerHTML = `<span class="legend-swatch" style="background:${colorForVaccine(displayNameMap[v] || v)}"></span><span>${displayNameMap[v] || v}</span>`;
 				legend.appendChild(sw);
 			});
 
@@ -817,69 +909,4 @@ function render_nourishment_chart(frm) {
   });
 }
 
-// --- Added: Sync Treatment/Vaccination logs into child table with loop guards ---
-frappe.ui.form.on("Poultry Batches", {
-	refresh(frm) {
-		try {
-			if (!frm.doc || !frm.doc.name) return;
-			const k = `poultry_sync_suppress_${frm.doc.name}`;
-			const ts = window.sessionStorage ? Number(window.sessionStorage.getItem(k) || 0) : 0;
-			if (!frm.__syncing_treatment_logs && (!ts || Date.now() - ts > 4000)) {
-				frm.__syncing_treatment_logs = true;
-				syncBatchTreatmentLogs(frm).always(() => {
-					frm.__syncing_treatment_logs = false;
-				});
-			}
-		} catch (e) {}
-	}
-});
-
-function syncBatchTreatmentLogs(frm) {
-	const dfd = $.Deferred();
-	frappe.call({
-		method: 'frappe.client.get_list',
-		args: {
-			doctype: 'Treatment and Vaccination Logs',
-			filters: { poultry_batch_under_treatment: frm.doc.name },
-			fields: ['name', 'treatment_date', 'vaccine_used', 'qty_vaccine', 'doctor', 'creation'],
-			order_by: 'treatment_date desc, creation desc',
-			limit_page_length: 1000
-		},
-		callback: function(r) {
-			const logs = r.message || [];
-			let changed = false;
-			if ((frm.doc.treatment_and_vaccination_log || []).length > 0) {
-				frm.clear_table('treatment_and_vaccination_log');
-				changed = true;
-			}
-			const totalAnimals = Number(frm.doc.total_animals || 0);
-			logs.forEach(log => {
-				const newRow = frm.add_child('treatment_and_vaccination_log');
-				newRow.treatment_date = log.treatment_date ? String(log.treatment_date) : null;
-				newRow.animal_vaccine_issued = log.vaccine_used || '';
-				newRow.quantity_of_vaccine_issued = log.qty_vaccine || 0;
-				newRow.treatment_conducted_by = log.doctor || '';
-				let approx = 0;
-				if (totalAnimals > 0) {
-					approx = Number(log.qty_vaccine || 0) / totalAnimals;
-				}
-				newRow.approximate_intake_per_animal = approx;
-				changed = true;
-			});
-
-			if (changed) {
-				frm.refresh_field('treatment_and_vaccination_log');
-				frm.save().then(() => {
-					try {
-						const k = `poultry_sync_suppress_${frm.doc.name}`;
-						if (window.sessionStorage) window.sessionStorage.setItem(k, String(Date.now()));
-					} catch (e) {}
-					frm.reload_doc().then(() => dfd.resolve());
-				}).catch(() => dfd.resolve());
-			} else {
-				dfd.resolve();
-			}
-		}
-	});
-	return dfd.promise();
-}
+// --- END OF SCRIPT ---

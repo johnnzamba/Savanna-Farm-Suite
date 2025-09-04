@@ -25,7 +25,10 @@ add_to_apps_screen = [
 
 # include js, css files in header of desk.html
 app_include_css = "/assets/farm_management_system/css/banners.css"
-app_include_js = "/assets/farm_management_system/js/banners.js"
+app_include_js = [ 
+    "/assets/farm_management_system/js/banners.js", 
+    "/assets/farm_management_system/js/poultry_batches_listview.js"
+]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/farm_management_system/css/banners.css"
@@ -58,6 +61,11 @@ fixtures = [
     {
         "dt": "Workflow",
         "filters": [["name", "in", ["Treatment Process"]]]
+
+    },
+    {
+        "dt": "Client Script",
+        "filters": [["name", "in", ["Poultry Batch"]]]
 
     },
     {
@@ -164,6 +172,13 @@ fixtures = [
 # override_doctype_class = {
 # 	"ToDo": "custom_app.overrides.CustomToDo"
 # }
+    # "frappe.email.receive.Email.set_subject": "my_app.email_utils.set_subject"
+# override_whitelisted_methods = {
+# 	"frappe.email.receive.Email.set_subject": "farm_management_system.config.email.custom_set_subject"
+# }
+
+# boot_session = "farm_management_system.config.email.apply_email_overrides"
+
 
 # Document Events
 # ---------------

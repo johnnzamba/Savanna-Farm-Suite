@@ -26,6 +26,7 @@
   "other_important_details_regarding_batch_section",
   "mortality_count",
   "mortality_rate",
+  "profitability_analysis_for_this_batch",
   "column_break_ximn",
   "total_feed",
   "total_water",
@@ -36,7 +37,10 @@
   "treatment_chart",
   "feeding_section_section",
   "nourishment_table",
-  "daily_consumption"
+  "daily_consumption",
+  "production_section_section",
+  "product_inventory_log",
+  "collection_tracker"
  ],
  "fields": [
   {
@@ -281,6 +285,31 @@
    "fieldname": "feeding_section_section",
    "fieldtype": "Section Break",
    "label": "Feeding Section"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "production_section_section",
+   "fieldtype": "Section Break",
+   "label": "Production Section"
+  },
+  {
+   "bold": 1,
+   "fieldname": "product_inventory_log",
+   "fieldtype": "Table",
+   "label": "Product Inventory Log",
+   "options": "Poultry Collections Table"
+  },
+  {
+   "fieldname": "collection_tracker",
+   "fieldtype": "HTML",
+   "label": "Product Collection Tracker"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.product_inventory_log",
+   "fieldname": "profitability_analysis_for_this_batch",
+   "fieldtype": "HTML",
+   "label": "Profitability Analysis for this Batch"
   }
  ],
  "grid_page_length": 50,
@@ -296,7 +325,7 @@
    "link_fieldname": "poultry_batch"
   }
  ],
- "modified": "2025-09-03 15:13:42.664122",
+ "modified": "2025-09-04 13:00:38.301791",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Poultry Batches",

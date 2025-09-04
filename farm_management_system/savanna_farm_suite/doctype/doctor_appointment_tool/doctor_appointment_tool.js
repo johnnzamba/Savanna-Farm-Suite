@@ -118,182 +118,264 @@ function renderTreatmentLogs(frm, data) {
 }
 
 function openTreatmentDialog(frm, docname) {
-    // Create dialog with form for vaccine details
     const dialog = new frappe.ui.Dialog({
         title: __('Treatment Details - Vaccines Used'),
         fields: [
-            {
-                fieldname: 'treatment_details_section',
-                fieldtype: 'Section Break',
-                label: __('Treatment Information')
-            },
-            {
-                fieldname: 'treatment_date',
-                fieldtype: 'Date',
-                label: __('Treatment Date'),
-                read_only: 1
-            },
-            {
-                fieldname: 'specify_type_of_treatment',
-                fieldtype: 'Data',
-                label: __('Treatment Type'),
-                read_only: 1
-            },
-            {
-                fieldname: 'col_break1',
-                fieldtype: 'Column Break'
-            },
-            {
-                fieldname: 'poultry_batch_under_treatment',
-                fieldtype: 'Link',
-                label: __('Poultry Batch'),
-                options: "Poultry Batches",
-                read_only: 1
-            },
-            {
-                fieldname: 'status',
-                fieldtype: 'Data',
-                label: __('Status'),
-                read_only: 1
-            },
-            {
-                fieldname: 'section_break',
-                fieldtype: 'Section Break',
-                label: __('Vaccines Used')
-            },
+            { fieldname: 'treatment_date', fieldtype: 'Date', label: __('Treatment Date'), read_only: 1 },
+            { fieldname: 'specify_type_of_treatment', fieldtype: 'Data', label: __('Treatment Type'), read_only: 1 },
+            { fieldname: 'poultry_batch_under_treatment', fieldtype: 'Link', label: __('Poultry Batch'), options: 'Poultry Batches', read_only: 1 },
+            { fieldname: 'status', fieldtype: 'Data', label: __('Status'), read_only: 1 },
+
+            // Hidden summary area (will be shown when a recorded vaccine exists)
+            { fieldname: 'vaccine_summary_html', fieldtype: 'HTML', label: __('Vaccine Summary'), hidden: 1 },
+
+            // The editable table shown only when no recorded vaccine exists
             {
                 fieldname: 'vaccines_table',
                 fieldtype: 'Table',
                 label: __('Vaccines'),
                 fields: [
-                    {
-                        fieldtype: 'Link',
-                        fieldname: 'animal_vaccine',
-                        label: __('Animal Vaccine'),
-                        options: 'Animal Vaccines',
-                        reqd: 1,
-                        in_list_view: 1
-                    },
-                    {
-                        fieldtype: 'Data',
-                        fieldname: 'uom',
-                        label: __('Default UOM'),
-                        read_only: 1,
-                        in_list_view: 1
-                    },
-                    {
-                        fieldtype: 'Float',
-                        fieldname: 'quantity_issued',
-                        label: __('Quantity Issued'),
-                        reqd: 1,
-                        in_list_view: 1
-                    }
+                    { fieldtype: 'Link', fieldname: 'animal_vaccine', label: __('Animal Vaccine'), options: 'Animal Vaccines', reqd: 1, in_list_view: 1 },
+                    { fieldtype: 'Data', fieldname: 'uom', label: __('Default UOM'), read_only: 1, in_list_view: 1 },
+                    { fieldtype: 'Float', fieldname: 'quantity_issued', label: __('Quantity Issued'), reqd: 1, in_list_view: 1 }
                 ]
             },
-            {
-                fieldname: 'notes',
-                fieldtype: 'Text',
-                label: __('Notes'),
-                read_only: 1,
-                hidden: 1
-            }
+            { fieldname: 'notes', fieldtype: 'Text', label: __('Notes'), read_only: 1, hidden: 1 }
         ],
         primary_action_label: __('Save Vaccines'),
         primary_action(values) {
-            saveVaccinesData(frm, docname, values.vaccines_table);
+            // defensive: only save the first row (we enforce single-row in UI too)
+            const toSave = (values.vaccines_table && values.vaccines_table.length) ? [values.vaccines_table[0]] : [];
+            saveVaccinesData(frm, docname, toSave);
             dialog.hide();
         }
     });
 
-    // Fetch and show document details
+    // helper escape
+    const esc = s => (s == null ? '' : String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;'));
+
+    // helper to set table description reliably
+    function set_table_description() {
+        try {
+            dialog.set_df_property('vaccines_table', 'description', __('ONLY 1 vaccine administered can be selected.'));
+            // refresh field so description renders
+            const f = dialog.fields_dict.vaccines_table;
+            if (f && f.refresh) f.refresh();
+        } catch (e) {
+            // fallback: inject description DOM before table wrapper
+            const f = dialog.fields_dict.vaccines_table;
+            if (f && f.wrapper && f.wrapper.find('[data-only-one-desc]').length === 0) {
+                $(f.wrapper).before(`<div data-only-one-desc class="text-muted small mb-2">${esc(__('ONLY 1 vaccine administered can be selected.'))}</div>`);
+            }
+        }
+    }
+
+    // Show dialog then populate
+    dialog.show();
+
+    // load treatment doc
     frappe.call({
         method: 'frappe.client.get',
-        args: {
-            doctype: 'Treatment and Vaccination Logs',
-            name: docname
-        },
+        args: { doctype: 'Treatment and Vaccination Logs', name: docname },
         callback: function(r) {
-            if (r.message) {
-                const doc = r.message;
-                dialog.set_values({
-                    treatment_date: doc.treatment_date,
-                    specify_type_of_treatment: doc.specify_type_of_treatment,
-                    poultry_batch_under_treatment: doc.poultry_batch_under_treatment,
-                    status: doc.status,
-                    notes: doc.notes
+            if (!r.message) return;
+            const doc = r.message;
+
+            dialog.set_values({
+                treatment_date: doc.treatment_date,
+                specify_type_of_treatment: doc.specify_type_of_treatment,
+                poultry_batch_under_treatment: doc.poultry_batch_under_treatment,
+                status: doc.status,
+                notes: doc.notes
+            });
+
+            // resolve quantity (support multiple possible field names)
+            const qty = doc.qty_vaccine || doc.quantity_of_vaccine_used || doc.quantity || doc.qty || doc.quantity_issued;
+
+            // If recorded vaccine & qty exist -> show summary (resolve name from Animal Vaccines)
+            if (doc.vaccine_used && qty) {
+                // hide the editable table
+                dialog.set_df_property('vaccines_table', 'hidden', 1);
+                // fetch vaccine_name from Animal Vaccines using the stored key (doc.vaccine_used)
+                // we attempt to treat doc.vaccine_used as the docname (common pattern)
+                frappe.call({
+                    method: 'frappe.client.get_value',
+                    args: {
+                        doctype: 'Animal Vaccines',
+                        filters: { name: doc.vaccine_used },
+                        fieldname: 'vaccine_name'
+                    },
+                    callback: function(res) {
+                        let vaccineName = (res && res.message && (res.message.vaccine_name || res.message.name)) || doc.vaccine_used;
+                        // if no vaccine_name, as a fallback try matching by some code field (attempt second call)
+                        if ((!vaccineName || vaccineName === '') && doc.vaccine_used) {
+                            // fallback: try fetching record where some code field equals value (best-effort)
+                            // (optional — comment out if not needed)
+                            // not implemented: keep using raw value
+                            vaccineName = doc.vaccine_used;
+                        }
+
+                        // render summary HTML: SVG + bold vaccineName qty + muted text to the right
+                        const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="36" height="36" style="flex:0 0 36px; margin-right:12px; color:currentColor;"><path d="M128 96C128 78.3 142.3 64 160 64L480 64C497.7 64 512 78.3 512 96L512 128C512 145.7 497.7 160 480 160L160 160C142.3 160 128 145.7 128 128L128 96zM160 208L480 208L480 512C480 547.3 451.3 576 416 576L224 576C188.7 576 160 547.3 160 512L160 208zM288 312L288 352L248 352C239.2 352 232 359.2 232 368L232 400C232 408.8 239.2 416 248 416L288 416L288 456C288 464.8 295.2 472 304 472L336 472C344.8 472 352 464.8 352 456L352 416L392 416C400.8 416 408 408.8 408 400L408 368C408 359.2 400.8 352 392 352L352 352L352 312C352 303.2 344.8 296 336 296L304 296C295.2 296 288 303.2 288 312z"/></svg>`;
+
+                        const html = `
+                            <div class="d-flex align-items-center" style="padding:12px;">
+                                ${svg}
+                                <div style="display:flex; flex-direction:column;">
+                                    <div><strong>${esc(vaccineName)} | Qty: ${esc(qty)}</strong></div>
+                                    <div class="text-muted small" style="margin-top:4px;">${esc(__('Already recorded on the log'))}</div>
+                                </div>
+                            </div>
+                        `;
+
+                        const sumField = dialog.fields_dict.vaccine_summary_html;
+                        if (sumField && sumField.$wrapper) {
+                            sumField.$wrapper.html(html);
+                            dialog.set_df_property('vaccine_summary_html', 'hidden', 0);
+                        } else {
+                            // fallback: insert after the dialog body
+                            $(dialog.body).prepend(html);
+                        }
+                        // hide primary action so user can't save
+                        try { dialog.get_primary_btn().hide(); } catch (e) {}
+                    }
                 });
-                
-                // Load existing vaccines if any
-                if (doc.vaccines_table && doc.vaccines_table.length > 0) {
-                    dialog.fields_dict.vaccines_table.df.data = doc.vaccines_table;
-                    dialog.fields_dict.vaccines_table.grid.refresh();
+
+                // done (we don't render the table)
+                return;
+            }
+
+            // OTHERWISE: show the table and enforce single-row rules
+            dialog.set_df_property('vaccines_table', 'hidden', 0);
+            set_table_description();
+
+            // load existing child rows (if any)
+            const vt = dialog.fields_dict.vaccines_table;
+            const vGrid = vt && vt.grid;
+            if (vt) {
+                vt.df.data = (doc.vaccines_table && doc.vaccines_table.length) ? doc.vaccines_table : [];
+                if (vGrid && vGrid.refresh) vGrid.refresh();
+            }
+
+            // Enforce single row: add one row automatically if none exist
+            if (vGrid) {
+                const currentData = vt.df.data || [];
+                if (currentData.length === 0) {
+                    // try to add a single row programmatically
+                    if (typeof vGrid.add_new_row === 'function') {
+                        vGrid.add_new_row();
+                    } else if (typeof vGrid.add_row === 'function') {
+                        vGrid.add_row();
+                    } else {
+                        // fallback: click add button if present
+                        vGrid.wrapper.find('.grid-add-row, .grid-add-rows, .add-row').first().click();
+                    }
                 }
+
+                // hide add-row UI and prevent additional rows
+                vGrid.wrapper.find('.grid-add-row, .grid-add-rows, .add-row, .grid-add').hide();
+
+                // defensive: intercept any attempts to add a row
+                vGrid.wrapper.off('.only_one').on('click.only_one', '.grid-add-row, .grid-add-rows, .add-row, .grid-add', function (e) {
+                    e.preventDefault();
+                    frappe.show_alert({ message: __('Only one vaccine can be selected'), indicator: 'orange' });
+                    return false;
+                });
+
+                // patch add_new_row to refuse further rows
+                if (!vGrid._patched_one_row) {
+                    const orig = vGrid.add_new_row && vGrid.add_new_row.bind(vGrid);
+                    if (orig) {
+                        vGrid.add_new_row = function() {
+                            const len = (vt.df.data || []).length;
+                            if (len >= 1) {
+                                frappe.show_alert({ message: __('Only one vaccine can be selected'), indicator: 'orange' });
+                                return;
+                            }
+                            return orig.apply(this, arguments);
+                        };
+                        vGrid._patched_one_row = true;
+                    }
+                }
+
+                // when a row is deleted, re-run the enforcement (unhide UI if zero rows)
+                vGrid.wrapper.on('click.only_one_remove', '.grid-remove-rows, .grid-delete-row', function() {
+                    setTimeout(() => {
+                        const len = (vt.df.data || []).length;
+                        if (len === 0) {
+                            // allow adding a new row (show add button)
+                            vGrid.wrapper.find('.grid-add-row, .grid-add-rows, .add-row, .grid-add').show();
+                        }
+                    }, 50);
+                });
+            }
+
+            // attach UOM auto-fill handlers (same as before)
+            if (vGrid && vGrid.wrapper) {
+                vGrid.wrapper.off('awesomplete-selectcomplete.uom change.uom blur.uom');
+                const handler = function() {
+                    const value = $(this).val();
+                    if (!value) return;
+                    const $row = $(this).closest('.grid-row');
+                    const rowName = $row.attr('data-name');
+                    const gridRow = vGrid.get_row && vGrid.get_row(rowName);
+                    const rowDoc = gridRow ? gridRow.doc : null;
+                    if (!rowDoc) return;
+
+                    frappe.call({
+                        method: 'farm_management_system.savanna_farm_suite.doctype.doctor_appointment_tool.doctor_appointment_tool.get_animal_vaccine_first_uom',
+                        args: { vaccine_name: value },
+                        callback: function(r) {
+                            const extracted = (r && r.message) || '';
+                            rowDoc.uom = extracted;
+                            if (gridRow && gridRow.refresh_field) {
+                                gridRow.refresh_field('uom');
+                            } else if (vGrid.refresh_row && rowName) {
+                                vGrid.refresh_row(rowName);
+                            } else if (vGrid.refresh) {
+                                vGrid.refresh();
+                            }
+                        }
+                    });
+                };
+                vGrid.wrapper.on('awesomplete-selectcomplete.uom', 'input[data-fieldname="animal_vaccine"]', handler);
+                vGrid.wrapper.on('change.uom', 'input[data-fieldname="animal_vaccine"]', handler);
+                vGrid.wrapper.on('blur.uom', 'input[data-fieldname="animal_vaccine"]', handler);
             }
         }
     });
-
-    dialog.show();
-
-    // Populate Default UOM when an Animal Vaccine is selected (delegate to grid wrapper)
-    const vGrid = dialog.fields_dict.vaccines_table && dialog.fields_dict.vaccines_table.grid;
-    if (vGrid && vGrid.wrapper) {
-        const handler = function() {
-            const value = $(this).val();
-            if (!value) return;
-            const $row = $(this).closest('.grid-row');
-            const rowName = $row.attr('data-name');
-            const gridRow = vGrid.get_row && vGrid.get_row(rowName);
-            const rowDoc = gridRow ? gridRow.doc : null;
-            if (!rowDoc) return;
-
-            frappe.call({
-                method: 'farm_management_system.savanna_farm_suite.doctype.doctor_appointment_tool.doctor_appointment_tool.get_animal_vaccine_first_uom',
-                args: { vaccine_name: value },
-                callback: function(r) {
-                    const extracted = (r && r.message) || '';
-                    rowDoc.uom = extracted;
-                    if (gridRow && gridRow.refresh_field) {
-                        gridRow.refresh_field('uom');
-                    } else if (vGrid.refresh_row && rowName) {
-                        vGrid.refresh_row(rowName);
-                    } else if (vGrid.refresh) {
-                        vGrid.refresh();
-                    }
-                }
-            });
-        };
-        // Link control emits awesomplete-selectcomplete on selection; also listen to change and blur
-        vGrid.wrapper.on('awesomplete-selectcomplete', 'input[data-fieldname="animal_vaccine"]', handler);
-        vGrid.wrapper.on('change', 'input[data-fieldname="animal_vaccine"]', handler);
-        vGrid.wrapper.on('blur', 'input[data-fieldname="animal_vaccine"]', handler);
-    }
 }
 
+
+// server-sync-saving (unchanged except defensive mapping)
 function saveVaccinesData(frm, treatmentLogName, vaccinesData) {
     // Clear existing rows for this treatment log
-    frm.doc.table_mfeb = frm.doc.table_mfeb.filter(row => row.treatment_log_no !== treatmentLogName);
-    
-    // Add new rows for each vaccine
-    if (vaccinesData && vaccinesData.length > 0) {
-        vaccinesData.forEach(vaccine => {
-            const newRow = frm.add_child('table_mfeb');
-            newRow.treatment_log_no = treatmentLogName;
-            newRow.vaccine_used = vaccine.animal_vaccine;
-            newRow.quantity_of_vaccine_used = vaccine.quantity_issued;
-        });
-        
+    frm.doc.table_mfeb = (frm.doc.table_mfeb || []).filter(row => row.treatment_log_no !== treatmentLogName);
+
+    const first = (vaccinesData && vaccinesData.length) ? vaccinesData[0] : null;
+    if (first) {
+        const newRow = frm.add_child('table_mfeb');
+        newRow.treatment_log_no = treatmentLogName;
+        newRow.vaccine_used = first.animal_vaccine || first.vaccine_used || '';
+        newRow.quantity_of_vaccine_used = first.quantity_issued || first.qty_vaccine || first.quantity || 0;
         frm.refresh_field('table_mfeb');
-        // Ensure user can proceed: expose Update Appointments button
-        frm.add_custom_button(__('Update Appointments'), function() {
-            updateAppointments(frm);
-        });
+
+        // Expose Update Appointments button (idempotent)
+        if (!frm.page.has_menu_button || !frm.page.has_menu_button(__('Update Appointments'))) {
+            frm.add_custom_button(__('Update Appointments'), function() { updateAppointments(frm); });
+        }
+    } else {
+        frm.refresh_field('table_mfeb');
     }
-    
-    frappe.show_alert({
-        message: __('Vaccines data added successfully'),
-        indicator: 'green'
-    });
+
+    frappe.show_alert({ message: __('Vaccines data added successfully'), indicator: 'green' });
 }
+
 
 function updateAppointments(frm) {
     // Freeze the screen

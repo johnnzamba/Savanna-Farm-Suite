@@ -71,12 +71,23 @@ fixtures = [
     {
         "dt": "Email Template",
         "filters": [["name", "in", ["Doctor's Notification"]]]
+    },
+    {
+        "dt": "Animals"
+    },
+    {
+        "dt": "Animals Categories"
+    },
+    {
+        "dt": "Location",
+        "filters": [["name", "in", ["Default"]]]
     }
 ]
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+# doctype,
+# _list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 

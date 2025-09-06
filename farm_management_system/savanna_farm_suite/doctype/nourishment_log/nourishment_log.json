@@ -11,6 +11,7 @@
   "date_of_nourishment",
   "poultry_batch",
   "log_for_poultry_shed",
+  "log_intended_for_cattle_shed",
   "feed_issued",
   "animal_feed_name",
   "default_uom",
@@ -53,8 +54,7 @@
    "fieldname": "log_for_poultry_shed",
    "fieldtype": "Link",
    "label": "Log intended for Poultry Shed",
-   "options": "Poultry Shed",
-   "read_only": 1
+   "options": "Poultry Shed"
   },
   {
    "fieldname": "feed_issued",
@@ -117,6 +117,12 @@
    "fieldtype": "Float",
    "label": "Total Amount of Water Consumed",
    "read_only": 1
+  },
+  {
+   "fieldname": "log_intended_for_cattle_shed",
+   "fieldtype": "Link",
+   "label": "Log Intended for Cattle Shed",
+   "options": "Cattle Shed"
   }
  ],
  "grid_page_length": 50,
@@ -124,7 +130,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-02 16:29:19.644151",
+ "modified": "2025-09-07 01:38:46.911745",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Nourishment Log",

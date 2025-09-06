@@ -1,0 +1,18 @@
+[
+ {
+  "area": 0.0,
+  "area_uom": null,
+  "docstatus": 0,
+  "doctype": "Location",
+  "is_container": 0,
+  "is_group": 1,
+  "latitude": 19.08,
+  "location": "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"properties\":{},\"geometry\":{\"type\":\"Point\",\"coordinates\":[36.817857,-1.289666]}}]}",
+  "location_name": "Default",
+  "longitude": 72.8961,
+  "modified": "2025-09-06 23:04:04.499846",
+  "name": "Default",
+  "old_parent": "",
+  "parent_location": null
+ }
+]

@@ -215,6 +215,7 @@ function process_record_action(frm) {
 		table_rows: JSON.stringify(payload_rows),
 		poultry_batch: frm.doc.poultry_batch || null,
 		poultry_house: frm.doc.poultry_house || null,
+		specify_cattle_shed : frm.doc.specify_cattle_shed || null,
 		incl_hydration: (frm.doc.incl_hydration ? true : false)
 	};
 

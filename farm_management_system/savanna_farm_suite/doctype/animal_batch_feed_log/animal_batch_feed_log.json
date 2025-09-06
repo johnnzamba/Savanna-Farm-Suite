@@ -8,8 +8,10 @@
  "field_order": [
   "date_fed",
   "fed_on",
+  "animal_feed_name",
   "total_qty_issued",
-  "fed_by_user"
+  "fed_by_user",
+  "users_full_name"
  ],
  "fields": [
   {
@@ -38,15 +40,34 @@
   {
    "bold": 1,
    "fieldname": "fed_on",
+   "fieldtype": "Link",
+   "label": "Type of Feed Given",
+   "options": "Animal Feeds"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "fed_on.feed_name",
+   "fetch_if_empty": 1,
+   "fieldname": "animal_feed_name",
    "fieldtype": "Data",
-   "label": "Type of Feed Given"
+   "label": "Animal Feed Name",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fetch_from": "fed_by_user.full_name",
+   "fetch_if_empty": 1,
+   "fieldname": "users_full_name",
+   "fieldtype": "Data",
+   "label": "User's Full Name",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-09-02 16:07:24.963914",
+ "modified": "2025-09-07 02:00:30.011046",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Animal Batch Feed Log",

@@ -84,7 +84,16 @@ def get_animal_feeds_by_animal(specify_animal):
     return result
 
 @frappe.whitelist()
-def create_nourishment_logs(nourishment_date, user, table_rows, poultry_batch=None, poultry_house=None, incl_hydration=False, water_amount=None):
+def create_nourishment_logs(
+    nourishment_date,
+    user,
+    table_rows,
+    poultry_batch=None,
+    poultry_house=None,
+    specify_cattle_shed=None,
+    incl_hydration=False,
+    water_amount=None
+):
     """
     Create & submit one Nourishment Log per row provided in table_rows (JSON string).
     Args:
@@ -93,6 +102,7 @@ def create_nourishment_logs(nourishment_date, user, table_rows, poultry_batch=No
         table_rows (json-stringified list): [{ "animal_feed": "...", "feed_default_uom": "...", "qty": 10 }, ...]
         poultry_batch (optional)
         poultry_house (optional)
+        specify_cattle_shed (optional)
         incl_hydration (bool / "true"/"false")
     Returns:
         list of created docnames
@@ -122,6 +132,11 @@ def create_nourishment_logs(nourishment_date, user, table_rows, poultry_batch=No
             denom = getattr(ps, "current_poultry_count", None)
         except Exception:
             denom = None
+    elif specify_cattle_shed:
+        try:
+            denom = frappe.db.count("Cattle", {"cow_shed": specify_cattle_shed})
+        except Exception:
+            denom = None
 
     created = []
     # iterate rows and create Nourishment Log docs
@@ -135,22 +150,28 @@ def create_nourishment_logs(nourishment_date, user, table_rows, poultry_batch=No
         else:
             avg_consumption = 0.0
 
-        # choose correct target: poultry_batch OR log_for_poultry_shed
+        # choose correct target: poultry_batch OR log_for_poultry_shed OR cattle shed
         if poultry_batch:
             pb_field = poultry_batch
             shed_field = None
+            cattle_shed_field = None
         elif poultry_house:
             pb_field = None
             shed_field = poultry_house
-        else:
+            cattle_shed_field = None
+        elif specify_cattle_shed:
             pb_field = None
             shed_field = None
+            cattle_shed_field = specify_cattle_shed
+        else:
+            pb_field = shed_field = cattle_shed_field = None
 
         new_doc = frappe.get_doc({
             "doctype": "Nourishment Log",
             "date_of_nourishment": nourishment_date,
             "poultry_batch": pb_field,
             "log_for_poultry_shed": shed_field,
+            "log_intended_for_cattle_shed": specify_cattle_shed,
             "feed_issued": animal_feed,
             "default_uom": default_uom,
             "qty_issued": qty,
@@ -166,7 +187,9 @@ def create_nourishment_logs(nourishment_date, user, table_rows, poultry_batch=No
             pass
 
         created.append(new_doc.name)
+
     return created
+
 
 import frappe
 import re

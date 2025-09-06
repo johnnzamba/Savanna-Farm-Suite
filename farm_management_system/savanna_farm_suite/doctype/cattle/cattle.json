@@ -1,0 +1,305 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "LV-.YYYY.-.####",
+ "creation": "2025-09-06 16:30:54.980401",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "add_nickname_optional",
+  "animal",
+  "specify_species",
+  "animals_birthdate",
+  "animals__sex",
+  "cow_shed",
+  "column_break_wzab",
+  "has_this_animal_been_castrated",
+  "important_notes",
+  "lft",
+  "rgt",
+  "is_group",
+  "old_parent",
+  "parent_cattle",
+  "additional_info_tab",
+  "other_important_information_section",
+  "is_this_a_fixed_asset",
+  "specify_net_purchase_amount",
+  "specify_the_date_of_purchase",
+  "column_break_cepe",
+  "is_the_animal_tagged",
+  "specify_the_type_of_tag",
+  "tag_number",
+  "additional_tag",
+  "specify_tag",
+  "tag_number_if_any",
+  "important_files_section",
+  "image_of_animal",
+  "other_animal_related_files",
+  "important_logs_tab",
+  "feeding_log",
+  "feeding_chart"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "add_nickname_optional",
+   "fieldtype": "Data",
+   "label": "Add Nickname (OPTIONAL)"
+  },
+  {
+   "default": "Cattle",
+   "fieldname": "animal",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Animal",
+   "link_filters": "[[\"Animals\",\"name\",\"=\",\"Cattle\"]]",
+   "options": "Animals"
+  },
+  {
+   "bold": 1,
+   "description": "Enter this animal asset's species/breed.",
+   "fieldname": "specify_species",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Specify Species",
+   "options": "Animals Categories",
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "animals_birthdate",
+   "fieldtype": "Date",
+   "label": "Animal's Birthdate"
+  },
+  {
+   "fieldname": "animals__sex",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Animal's  Sex",
+   "options": "\nMale\nFemale",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_wzab",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "depends_on": "eval:doc.animals__sex == \"Male\"",
+   "fieldname": "has_this_animal_been_castrated",
+   "fieldtype": "Check",
+   "label": "Has this animal been castrated?"
+  },
+  {
+   "description": "Particular Information regarding this Animal.",
+   "fieldname": "important_notes",
+   "fieldtype": "Small Text",
+   "label": "Important Notes"
+  },
+  {
+   "fieldname": "lft",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Left",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "rgt",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Right",
+   "no_copy": 1,
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:!doc.parent_cattle",
+   "description": "NOTE: Check TRUE ONLY if Animal has Offspring.",
+   "fieldname": "is_group",
+   "fieldtype": "Check",
+   "label": "Is Parent"
+  },
+  {
+   "depends_on": "eval:doc.is_group != 1",
+   "fieldname": "old_parent",
+   "fieldtype": "Link",
+   "label": "Additional Parent (If ANY)",
+   "options": "Cattle"
+  },
+  {
+   "depends_on": "eval:doc.is_group != 1",
+   "fieldname": "parent_cattle",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Parent to this Animal",
+   "options": "Cattle"
+  },
+  {
+   "fieldname": "additional_info_tab",
+   "fieldtype": "Tab Break",
+   "label": "Additional Info"
+  },
+  {
+   "fieldname": "other_important_information_section",
+   "fieldtype": "Section Break",
+   "label": "Other Important Information"
+  },
+  {
+   "default": "0",
+   "description": "Will be Treated as they are long-term, income-generating assets that can be DEPRECIATED or REVALUED depending on the policy.",
+   "fieldname": "is_this_a_fixed_asset",
+   "fieldtype": "Check",
+   "label": "Is this a Fixed Asset?"
+  },
+  {
+   "depends_on": "eval:doc.is_this_a_fixed_asset == 1",
+   "description": "If Asset, enter the purchase amount for the animal.",
+   "fieldname": "specify_net_purchase_amount",
+   "fieldtype": "Currency",
+   "label": "Specify Net Purchase Amount",
+   "mandatory_depends_on": "eval:doc.is_this_a_fixed_asset == 1"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "is_the_animal_tagged",
+   "fieldtype": "Check",
+   "label": "Is the animal tagged?"
+  },
+  {
+   "depends_on": "eval:doc.is_the_animal_tagged == 1",
+   "fieldname": "specify_the_type_of_tag",
+   "fieldtype": "Select",
+   "label": "Specify the type of Tag",
+   "mandatory_depends_on": "eval:doc.is_the_animal_tagged == 1",
+   "options": "\nBrand\nEar Tag\nElectronic ID\nLeg Band\nOther"
+  },
+  {
+   "fieldname": "column_break_cepe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "depends_on": "eval:doc.specify_the_type_of_tag",
+   "fieldname": "additional_tag",
+   "fieldtype": "Check",
+   "label": "Does the animal bear an additional tag?"
+  },
+  {
+   "depends_on": "eval:doc.additional_tag == 1",
+   "fieldname": "specify_tag",
+   "fieldtype": "Select",
+   "label": "Specify the type of Tag",
+   "mandatory_depends_on": "eval:doc.additional_tag == 1",
+   "options": "\nBrand\nEar Tag\nElectronic ID\nLeg Band\nOther"
+  },
+  {
+   "fieldname": "important_files_section",
+   "fieldtype": "Section Break",
+   "label": "Important Files"
+  },
+  {
+   "bold": 1,
+   "fieldname": "image_of_animal",
+   "fieldtype": "Attach Image",
+   "label": "Image of Animal"
+  },
+  {
+   "bold": 1,
+   "fieldname": "other_animal_related_files",
+   "fieldtype": "Attach",
+   "label": "Other Animal Related Files"
+  },
+  {
+   "depends_on": "eval:doc.specify_the_type_of_tag",
+   "fieldname": "tag_number",
+   "fieldtype": "Data",
+   "label": "Tag Number (If Any)"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.specify_tag",
+   "fieldname": "tag_number_if_any",
+   "fieldtype": "Data",
+   "label": "Tag Number (If Any)"
+  },
+  {
+   "depends_on": "eval:doc.is_this_a_fixed_asset == 1",
+   "fieldname": "specify_the_date_of_purchase",
+   "fieldtype": "Date",
+   "label": "Specify the Date of Purchase",
+   "mandatory_depends_on": "eval:doc.is_this_a_fixed_asset == 1"
+  },
+  {
+   "bold": 1,
+   "fieldname": "cow_shed",
+   "fieldtype": "Link",
+   "label": "Animal is Tied to which Shed?",
+   "options": "Cattle Shed"
+  },
+  {
+   "fieldname": "important_logs_tab",
+   "fieldtype": "Tab Break",
+   "label": "Important Logs"
+  },
+  {
+   "fieldname": "feeding_log",
+   "fieldtype": "Table",
+   "label": "Feeding Log",
+   "options": "Animal Batch Feed Log"
+  },
+  {
+   "fieldname": "feeding_chart",
+   "fieldtype": "HTML",
+   "label": "Feeding Chart"
+  }
+ ],
+ "grid_page_length": 50,
+ "image_field": "image_of_animal",
+ "index_web_pages_for_search": 1,
+ "is_tree": 1,
+ "links": [],
+ "modified": "2025-09-07 02:38:47.011429",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Cattle",
+ "naming_rule": "Expression (old style)",
+ "nsm_parent_field": "parent_cattle",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "add_nickname_optional, specify_species, animals__sex",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Light Blue",
+   "title": "Female"
+  },
+  {
+   "color": "Red",
+   "title": "Male"
+  }
+ ],
+ "title_field": "add_nickname_optional",
+ "track_changes": 1
+}

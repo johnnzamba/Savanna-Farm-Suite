@@ -1,0 +1,79 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SHED-{###}",
+ "creation": "2025-09-06 23:51:37.400261",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "shed_description",
+  "current_animal_count",
+  "important_logs_section",
+  "feeding_logs",
+  "feeding_chart"
+ ],
+ "fields": [
+  {
+   "fieldname": "shed_description",
+   "fieldtype": "Data",
+   "label": "Shed Description"
+  },
+  {
+   "bold": 1,
+   "fieldname": "current_animal_count",
+   "fieldtype": "Data",
+   "label": "Current Animal Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "important_logs_section",
+   "fieldtype": "Section Break",
+   "label": "Important Logs"
+  },
+  {
+   "fieldname": "feeding_logs",
+   "fieldtype": "Table",
+   "label": "Feeding Logs",
+   "options": "Animal Batch Feed Log"
+  },
+  {
+   "fieldname": "feeding_chart",
+   "fieldtype": "HTML",
+   "label": "Feeding Chart"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "Cattle",
+   "link_fieldname": "cow_shed"
+  }
+ ],
+ "modified": "2025-09-07 00:36:27.911606",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Cattle Shed",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "show_title_field_in_link": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "current_animal_count"
+}

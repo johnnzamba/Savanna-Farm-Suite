@@ -8,82 +8,133 @@ import json
 from frappe.utils import flt, nowdate, nowtime, get_datetime, now_datetime
 
 class NourishmentLog(Document):
-		def before_insert(self):
-			self.validate_stock_before_insert()
-			
-		def validate_stock_before_insert(self):
-			feed = (self.feed_issued or "").strip()
-			qty_needed = flt(self.qty_issued or 0.0)
-			feed_name = (self.animal_feed_name or "").strip()
-			uom = getattr(self, "default_uom", "") or getattr(self, "feed_default_uom", "")
-
-			if not feed:
-				frappe.throw(_("Cannot validate stock: field 'feed_issued' is empty."), frappe.ValidationError)
-
-			# Find corresponding Item by item_code
-			items = frappe.get_all("Item", filters={"item_code": feed_name}, fields=["name"])
-			if not items:
-				frappe.throw(
-					_("No Item found with item_code '{0}'. Cannot validate stock availability.").format(feed),
-					frappe.ValidationError
-				)
-
-			# Use first matching Item
-			item_name = items[0].get("name")
-
-			# Fetch the latest Stock Ledger Entry for this item (ordered by creation desc)
-			sle_rows = frappe.get_all(
-				"Stock Ledger Entry",
-				filters={"item_code": item_name},
-				fields=["name", "qty_after_transaction", "creation"],
-				order_by="creation desc",
-				limit_page_length=1
-			)
-
-			if not sle_rows:
-				frappe.throw(
-					_("No Stock Ledger Entry found for Item '{0}'. Cannot validate stock availability.").format(item_name),
-					frappe.ValidationError
-				)
-
-			latest_sle = sle_rows[0]
-			available_qty = flt(latest_sle.get("qty_after_transaction") or 0.0)
-
-			# Compare available vs needed
-			if available_qty < qty_needed:
-				# Build helpful error message with values and unit if available
-				unit_text = f" {uom}" if uom else ""
-				msg = _(
-					"Insufficient stock for <strong>{feed_name}</strong> to create Nourishment Log.\n\n"
-					"Requested: {requested}{unit}\n"
-					"Available (latest Stock Ledger Entry): {available}\n\n"
-					"Action: replenish stock or reduce requested quantity."
-				).format(requested=qty_needed, unit=unit_text, available=available_qty, feed_name=feed_name )
-
-				frappe.throw(msg, frappe.ValidationError)
-			return
+    def before_insert(self):
+        self.validate_stock_before_insert()
         
-		def after_insert(self):
-			"""
-			Called after a Nourishment Log is inserted.
-			Appends a row into the related Poultry Batches.nourishment_table (if poultry_batch present).
-			"""
-			try:
-				update_feed_log(self.name)
-			except Exception as e:
-				# log full traceback for debugging then throw a user friendly message
-				frappe.log_error(frappe.get_traceback(), "Nourishment Log: update_feed_log failed")
-				frappe.throw(_("Failed to update Poultry Batch's feed log: {0}").format(str(e)))
-            
-		def on_submit(self):
-			"""
-			After a Nourishment Log is submitted, create the corresponding Stock Ledger Entry.
-			We call the helper above to perform the insertion/submission.
-			"""
-			try:
-				result = create_stock_ledger_entry_for_nourishment(self.name)
-			except Exception as e:
-				frappe.throw(_("Failed to create Stock Ledger Entry for Nourishment Log {0}: {1}").format(self.name, str(e)))
+    def validate_stock_before_insert(self):
+        feed = (self.feed_issued or "").strip()
+        qty_needed = flt(self.qty_issued or 0.0)
+        feed_name = (self.animal_feed_name or "").strip()
+        uom = getattr(self, "default_uom", "") or getattr(self, "feed_default_uom", "")
+
+        if not feed:
+            frappe.throw(_("Cannot validate stock: field 'feed_issued' is empty."), frappe.ValidationError)
+
+        # Find corresponding Item by item_code
+        items = frappe.get_all("Item", filters={"item_code": feed_name}, fields=["name"])
+        if not items:
+            frappe.throw(
+                _("No Item found with item_code '{0}'. Cannot validate stock availability.").format(feed),
+                frappe.ValidationError
+            )
+
+        # Use first matching Item
+        item_name = items[0].get("name")
+
+        # Fetch the latest Stock Ledger Entry for this item (ordered by creation desc)
+        sle_rows = frappe.get_all(
+            "Stock Ledger Entry",
+            filters={"item_code": item_name},
+            fields=["name", "qty_after_transaction", "creation"],
+            order_by="creation desc",
+            limit_page_length=1
+        )
+
+        if not sle_rows:
+            frappe.throw(
+                _("No Stock Ledger Entry found for Item '{0}'. Cannot validate stock availability.").format(item_name),
+                frappe.ValidationError
+            )
+
+        latest_sle = sle_rows[0]
+        available_qty = flt(latest_sle.get("qty_after_transaction") or 0.0)
+
+        # Compare available vs needed
+        if available_qty < qty_needed:
+            # Build helpful error message with values and unit if available
+            unit_text = f" {uom}" if uom else ""
+            msg = _(
+                "Insufficient stock for <strong>{feed_name}</strong> to create Nourishment Log.\n\n"
+                "Requested: {requested}{unit}\n"
+                "Available (latest Stock Ledger Entry): {available}\n\n"
+                "Action: replenish stock or reduce requested quantity."
+            ).format(requested=qty_needed, unit=unit_text, available=available_qty, feed_name=feed_name )
+
+            frappe.throw(msg, frappe.ValidationError)
+        return
+    
+    def after_insert(self):
+        """
+        Called after a Nourishment Log is inserted.
+        Appends a row into the related Poultry Batches.nourishment_table (if poultry_batch present).
+        """
+        try:
+            update_feed_log(self.name)
+        except Exception as e:
+            # log full traceback for debugging then throw a user friendly message
+            frappe.log_error(frappe.get_traceback(), "Nourishment Log: update_feed_log failed")
+            frappe.throw(_("Failed to update Poultry Batch's feed log: {0}").format(str(e)))
+        
+    def on_submit(self):
+        """
+        After a Nourishment Log is submitted, create the corresponding Stock Ledger Entry.
+        We call the helper above to perform the insertion/submission.
+        """
+        try:
+            create_stock_ledger_entry_for_nourishment(self.name)
+        except Exception as e:
+            frappe.throw(_("Failed to create Stock Ledger Entry for Nourishment Log {0}: {1}").format(self.name, str(e)))
+        
+        if self.log_intended_for_cattle_shed:
+            try:
+                # Update Cattle Shed document
+                cattle_shed = frappe.get_doc("Cattle Shed", self.log_intended_for_cattle_shed)
+                cattle_shed.append("feeding_logs", {
+                    "date_fed": self.date_of_nourishment,
+                    "fed_on": self.feed_issued,
+                    "total_qty_issued": self.qty_issued,
+                    "fed_by_user": self.user
+                })
+                cattle_shed.save(ignore_permissions=True)
+                
+                # Update individual Cattle documents in this shed
+                cattle_list = frappe.get_all("Cattle", 
+                                            filters={"cow_shed": self.log_intended_for_cattle_shed},
+                                            fields=["name"])
+                
+                updated_count = 0
+                for cattle in cattle_list:
+                    cattle_doc = frappe.get_doc("Cattle", cattle.name)
+                    cattle_doc.append("feeding_log", {
+                        "date_fed": self.date_of_nourishment,
+                        "fed_on": self.feed_issued,
+                        "total_qty_issued": self.avg_consumption,  
+                        "fed_by_user": self.user
+                    })
+                    cattle_doc.save(ignore_permissions=True)
+                    updated_count += 1
+                
+                # Show success notification
+                frappe.msgprint(
+                    _("Successfully updated feeding logs for {0} cattle in {1} cattle shed").format(
+                        updated_count, self.log_intended_for_cattle_shed
+                    ),
+                    title=_("Feeding Logs Updated"),
+                    indicator="green"
+                )
+                
+            except Exception as e:
+                frappe.log_error(
+                    _("Error updating feeding logs for cattle shed {0}: {1}").format(
+                        self.log_intended_for_cattle_shed, str(e)
+                    ),
+                    "Nourishment Log on_submit"
+                )
+                frappe.msgprint(
+                    _("Failed to update feeding logs for cattle shed. Please check error logs."),
+                    title=_("Update Failed"),
+                    indicator="red"
+                )
 
 
 @frappe.whitelist()

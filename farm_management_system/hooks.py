@@ -27,7 +27,8 @@ add_to_apps_screen = [
 app_include_css = "/assets/farm_management_system/css/banners.css"
 app_include_js = [ 
     "/assets/farm_management_system/js/banners.js", 
-    "/assets/farm_management_system/js/poultry_batches_listview.js"
+    "/assets/farm_management_system/js/poultry_batches_listview.js",
+    "/assets/farm_management_system/js/cattle_listview.js"
 ]
 
 # include js, css files in header of web template
@@ -43,6 +44,10 @@ sounds = [
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "farm_management_system/public/scss/website"
+
+treeviews = [
+	"Cattle"
+]
 
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}

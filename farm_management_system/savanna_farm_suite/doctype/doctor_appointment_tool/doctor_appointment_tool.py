@@ -10,16 +10,21 @@ class DoctorAppointmentTool(Document):
 
 
 @frappe.whitelist()
-def create_appointments(doctor, treatment_type, appointment_date, poultry_batch):
+def create_appointments(doctor, treatment_type, appointment_date, animal, poultry_batch=None, cattle_shed=None, cattle=None):
     """Create a new Treatment and Vaccination Log"""
     try:
         doc = frappe.new_doc("Treatment and Vaccination Logs")
         doc.specify_type_of_treatment = treatment_type
         doc.doctor = doctor
         doc.treatment_date = appointment_date
-        doc.poultry_batch_under_treatment = poultry_batch
-        doc.insert(ignore_permissions=True)
-        
+        doc.animal = animal
+        if poultry_batch:
+                doc.poultry_batch_under_treatment = poultry_batch
+        if cattle_shed:
+                doc.cattle_shed_under_treatment = cattle_shed
+        if cattle:
+                doc.specific_cattle_under_treatment = cattle
+        doc.insert(ignore_permissions=True)        
         return {"name": doc.name}
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Appointment Creation Error")

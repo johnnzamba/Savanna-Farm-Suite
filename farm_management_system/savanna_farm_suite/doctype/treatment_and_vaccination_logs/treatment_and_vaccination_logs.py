@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _
 import json
 from frappe.model.document import Document
 from datetime import datetime, timedelta
@@ -51,6 +52,8 @@ class TreatmentandVaccinationLogs(Document):
 		# Create stock ledger entry for vaccine if vaccine_used is set
 		if self.vaccine_used:
 			self.create_stock_ledger_entry_for_vaccine()
+		if self.vaccine_used and self.qty_vaccine:
+			self.update_cattle_logs()
 	
 	def on_update_after_submit(self):
 		"""Handle updates after document submission"""
@@ -329,6 +332,69 @@ class TreatmentandVaccinationLogs(Document):
 				
 		except Exception as e:
 			frappe.log_error(f"Error updating workflow state after submit: {str(e)}")
+
+	def update_cattle_logs(self):
+		"""
+		Update treatment logs in Cattle Shed and/or individual Cattle documents
+		with vaccine information from the current document
+		"""
+		try:
+			# Update Cattle Shed treatment logs if specified
+			if hasattr(self, 'cattle_shed_under_treatment') and self.cattle_shed_under_treatment:
+				self.update_cattle_shed_treatment_logs()
+			
+			# Update individual Cattle treatment table if specified
+			if hasattr(self, 'specific_cattle_under_treatment') and self.specific_cattle_under_treatment:
+				self.update_individual_cattle_treatment()
+				
+		except Exception as e:
+			frappe.log_error(
+				_("Error updating cattle treatment logs for {0}: {1}").format(self.name, str(e)),
+				"Cattle Treatment Update"
+			)
+			frappe.msgprint(
+				_("Failed to update treatment logs. Please check error logs."),
+				title=_("Update Failed"),
+				indicator="red"
+			)
+
+	def update_cattle_shed_treatment_logs(self):
+		"""Update treatment logs in the Cattle Shed document"""
+		cattle_shed = frappe.get_doc("Cattle Shed", self.cattle_shed_under_treatment)
+		
+		# Append to treatment_logs table
+		cattle_shed.append("treatment_logs", {
+			"treatment_date": self.treatment_date,
+			"animal_vaccine_issued": self.vaccine_used,
+			"treatment_conducted_by": self.doctor,
+			"quantity_of_vaccine_issued": self.qty_vaccine,
+			"approximate_intake_per_animal": self.qty_vaccine
+		})
+		
+		cattle_shed.save(ignore_permissions=True)
+		frappe.msgprint(
+			_("Treatment log updated for cattle shed {0}").format(self.cattle_shed_under_treatment),
+			indicator="green"
+		)
+
+	def update_individual_cattle_treatment(self):
+		"""Update treatment table in the individual Cattle document"""
+		cattle = frappe.get_doc("Cattle", self.specific_cattle_under_treatment)
+		
+		# Append to treatment_table
+		cattle.append("treatment_table", {
+			"treatment_date": self.treatment_date,
+			"animal_vaccine_issued": self.vaccine_used,
+			"treatment_conducted_by": self.doctor,
+			"quantity_of_vaccine_issued": self.qty_vaccine,
+			"approximate_intake_per_animal": self.qty_vaccine
+		})
+		
+		cattle.save(ignore_permissions=True)
+		frappe.msgprint(
+			_("Treatment log updated for cattle {0}").format(self.specific_cattle_under_treatment),
+			indicator="green"
+		)
 
 
 @frappe.whitelist()

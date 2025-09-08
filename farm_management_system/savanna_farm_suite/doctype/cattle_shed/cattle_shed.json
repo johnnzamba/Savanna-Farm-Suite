@@ -10,7 +10,9 @@
   "current_animal_count",
   "important_logs_section",
   "feeding_logs",
-  "feeding_chart"
+  "feeding_chart",
+  "treatment_logs",
+  "treatment_chart"
  ],
  "fields": [
   {
@@ -40,6 +42,17 @@
    "fieldname": "feeding_chart",
    "fieldtype": "HTML",
    "label": "Feeding Chart"
+  },
+  {
+   "fieldname": "treatment_logs",
+   "fieldtype": "Table",
+   "label": "Treatment Logs",
+   "options": "Treatment Table"
+  },
+  {
+   "fieldname": "treatment_chart",
+   "fieldtype": "HTML",
+   "label": "Treatment Chart"
   }
  ],
  "grid_page_length": 50,
@@ -50,7 +63,7 @@
    "link_fieldname": "cow_shed"
   }
  ],
- "modified": "2025-09-07 00:36:27.911606",
+ "modified": "2025-09-08 10:18:27.659337",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Cattle Shed",
@@ -71,9 +84,8 @@
   }
  ],
  "row_format": "Dynamic",
- "show_title_field_in_link": 1,
+ "search_fields": "current_animal_count",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
- "title_field": "current_animal_count"
+ "states": []
 }

@@ -1,14 +1,14 @@
-// farm_management_system/public/js/poultry_batches_listview.js
-frappe.listview_settings['Poultry Batches'] = {
+// farm_management_system/public/js/cattle_listview.js
+frappe.listview_settings['Cattle'] = {
     onload: function(list_view) {
         // only show to users who should see it (optional): skip role check here for brevity
         list_view.page.add_inner_button(__('Make Collection'), () => {
             const dialog = new frappe.ui.Dialog({
-                title: __('Make Collection'),
+                title: __('Make a Collection of Animal Products'),
                 fields: [
                     { fieldtype: 'Date', fieldname: 'date_of_collection', label: __('Date of Collection'), default: frappe.datetime.get_today(), reqd: 1 },
-                    { fieldtype: 'Link', fieldname: 'animal', label: __('Specify Animal'), options: 'Animals', default: "Chicken", read_only: 1, reqd: 1 },
-                    { fieldtype: 'Link', fieldname: 'poultry_batch', label: __('Specify Poultry Batch'), options: 'Poultry Batches', reqd: 1 },
+                    { fieldtype: 'Link', fieldname: 'animal', label: __('Specify Animal'), options: 'Animals', default: "Cattle", reqd: 1 },
+                    { fieldtype: 'Link', fieldname: 'cattle', label: __('Specify Cow'), options: 'Cattle', reqd: 1 },
                     {
                         fieldtype: 'Table',
                         fieldname: 'production_table',
@@ -48,9 +48,9 @@ frappe.listview_settings['Poultry Batches'] = {
                         () => {
                             frappe.dom.freeze(__('Creating collection...'));
                             frappe.call({
-                                method: 'farm_management_system.savanna_farm_suite.doctype.poultry_batches.poultry_batches.create_collection_entry',
+                                method: 'farm_management_system.savanna_farm_suite.doctype.cattle.cattle.create_collection_entry',
                                 args: {
-                                    poultry_batch: dvalues.poultry_batch,
+                                    cattle: dvalues.cattle,
                                     date_of_collection: dvalues.date_of_collection,
                                     rows: rows
                                 },

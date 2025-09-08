@@ -37,7 +37,7 @@ frappe.ui.form.on("Doctor Appointment Tool", {
                 args: {
                     doctype: 'Treatment and Vaccination Logs',
                     filters: { doctor: frm.doc.specify_doctor },
-                    fields: ['specify_type_of_treatment', 'treatment_date', 'poultry_batch_under_treatment', 'status', 'name'],
+                    fields: ['specify_type_of_treatment', 'treatment_date', 'animal_under_medication','status', 'name'],
                     order_by: 'treatment_date desc'
                 },
                 callback: function(r) {
@@ -68,7 +68,7 @@ function renderTreatmentLogs(frm, data) {
                     <tr>
                         <th>${__('Date')}</th>
                         <th>${__('Treatment Type')}</th>
-                        <th>${__('Poultry Batch')}</th>
+                        <th>${__('Animal under Treatment')}</th>
                         <th>${__('Status')}</th>
                         <th>${__('Actions')}</th>
                     </tr>
@@ -90,7 +90,7 @@ function renderTreatmentLogs(frm, data) {
                 <tr>
                     <td>${frappe.datetime.str_to_user(row.treatment_date) || ''}</td>
                     <td>${row.specify_type_of_treatment || ''}</td>
-                    <td>${row.poultry_batch_under_treatment || ''}</td>
+                    <td>${row.animal_under_medication || ''}</td>
                     <td><span class="badge badge-secondary">${row.status || ''}</span></td>
                     <td>
                         <button class="btn btn-sm btn-light btn-view" data-name="${row.name}">
@@ -123,9 +123,10 @@ function openTreatmentDialog(frm, docname) {
         fields: [
             { fieldname: 'treatment_date', fieldtype: 'Date', label: __('Treatment Date'), read_only: 1 },
             { fieldname: 'specify_type_of_treatment', fieldtype: 'Data', label: __('Treatment Type'), read_only: 1 },
-            { fieldname: 'poultry_batch_under_treatment', fieldtype: 'Link', label: __('Poultry Batch'), options: 'Poultry Batches', read_only: 1 },
-            { fieldname: 'status', fieldtype: 'Data', label: __('Status'), read_only: 1 },
-
+            {fieldname: 'animal_under_medication', fieldtype: 'Link', options: 'Animals' ,label: __('Animal under Treatment'), read_only: 1 },
+            { fieldname: 'poultry_batch_under_treatment', fieldtype: 'Link', label: __('Poultry Batch'), options: 'Poultry Batches', read_only: 1, depends_on: 'eval:doc.cattle_shed_under_treatment == null || doc.cattle_shed_under_treatment == ""' },
+            { fieldname: 'cattle_shed_under_treatment', fieldtype: 'Link', label: __('Cattle Shed'), options: 'Cattle Shed', read_only: 1, depends_on: 'eval:doc.poultry_batch_under_treatment == null || doc.poultry_batch_under_treatment == ""' },
+            { fieldname: 'specific_cattle_under_treatment', fieldtype: 'Link', label: __('Cattle under Treatment (if applicable)'), options: 'Cattle', read_only: 1, depends_on: 'eval:doc.cattle_shed_under_treatment' },
             // Hidden summary area (will be shown when a recorded vaccine exists)
             { fieldname: 'vaccine_summary_html', fieldtype: 'HTML', label: __('Vaccine Summary'), hidden: 1 },
 
@@ -190,6 +191,9 @@ function openTreatmentDialog(frm, docname) {
                 treatment_date: doc.treatment_date,
                 specify_type_of_treatment: doc.specify_type_of_treatment,
                 poultry_batch_under_treatment: doc.poultry_batch_under_treatment,
+                cattle_shed_under_treatment: doc.cattle_shed_under_treatment,
+                specific_cattle_under_treatment: doc.specific_cattle_under_treatment,
+                animal_under_medication: doc.animal_under_medication,
                 status: doc.status,
                 notes: doc.notes
             });
@@ -398,7 +402,7 @@ function updateAppointments(frm) {
         if (row.treatment_log_no && row.vaccine_used) {
             // Prepare data to update
             const updateData = {
-                vaccine_used: row.vaccine_issued,
+                vaccine_used: row.vaccine_used,
                 qty_vaccine: row.quantity_of_vaccine_used || 0
             };
             
@@ -542,11 +546,34 @@ function openAddAppointmentDialog(frm) {
                 }
             },
             {
+                fieldname: 'animal',
+                fieldtype: 'Link',
+                label: __('Specify Animal'),
+                options: 'Animals',
+                reqd: 1
+            },
+            {
                 fieldname: 'poultry_batch',
                 fieldtype: 'Link',
                 label: __('Poultry Batch'),
-                options: 'Poultry Batches',
-                reqd: 1
+                depends_on: "eval:doc.animal == 'Chicken'",
+                mandatory_depends_on: "eval:doc.animal == 'Chicken'",
+                options: 'Poultry Batches'
+            },
+            {
+                fieldname: 'cattle_shed',
+                fieldtype: 'Link',
+                depends_on: "eval:doc.animal == 'Cattle'",
+                mandatory_depends_on: "eval:doc.animal == 'Cattle'",
+                label: __('Specify Cattle Shed'),
+                options: 'Cattle Shed'
+            },
+            {
+                fieldname: 'cattle',
+                fieldtype: 'Link',
+                depends_on: "eval:doc.cattle_shed",
+                label: __('Specify Cow under Treatment (OPTIONAL)'),
+                options: 'Cattle',
             },
             {
                 fieldname: 'date_status',
@@ -635,7 +662,10 @@ function createAppointment(frm, values, dialog) {
             doctor: values.doctor,
             treatment_type: values.treatment_type,
             appointment_date: values.appointment_date,
-            poultry_batch: values.poultry_batch
+            poultry_batch: values.poultry_batch,
+            cattle_shed: values.cattle_shed,
+            cattle: values.cattle,
+            animal: values.animal
         },
         callback: function(r) {
             frappe.dom.unfreeze();

@@ -12,6 +12,9 @@
   "doctor",
   "treatment_date",
   "poultry_batch_under_treatment",
+  "animal_under_medication",
+  "cattle_shed_under_treatment",
+  "specific_cattle_under_treatment",
   "vaccine_used",
   "qty_vaccine",
   "doctors_purchase_order_based_on_appointment_fee",
@@ -51,7 +54,8 @@
    "fieldtype": "Link",
    "label": "Poultry Batch Under Treatment",
    "options": "Poultry Batches",
-   "read_only": 1
+   "read_only": 1,
+   "read_only_depends_on": "eval:doc.cattle_shed_under_treatment"
   },
   {
    "allow_on_submit": 1,
@@ -98,13 +102,36 @@
    "label": "Status",
    "options": "\nUpcoming\nAppointment Set for This Month\nAppointment Set for This Week\nAppointment Scheduled for Today\nAppointment Passed",
    "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "cattle_shed_under_treatment",
+   "fieldtype": "Link",
+   "label": "Cattle Shed under Treatment",
+   "options": "Cattle Shed",
+   "read_only_depends_on": "eval:doc.poultry_batch_under_treatment"
+  },
+  {
+   "bold": 1,
+   "fieldname": "animal_under_medication",
+   "fieldtype": "Link",
+   "label": "Animal under Medication",
+   "options": "Animals"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.cattle_shed_under_treatment",
+   "fieldname": "specific_cattle_under_treatment",
+   "fieldtype": "Link",
+   "label": "Specific Cattle under Treatment",
+   "options": "Cattle"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-03 12:35:28.079288",
+ "modified": "2025-09-08 09:50:20.115190",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Treatment and Vaccination Logs",

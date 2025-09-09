@@ -14,6 +14,7 @@
   "animals_birthdate",
   "animals__sex",
   "cow_shed",
+  "has_been_culled",
   "column_break_wzab",
   "has_this_animal_been_castrated",
   "important_notes",
@@ -303,6 +304,14 @@
    "fieldname": "production_chart",
    "fieldtype": "HTML",
    "label": "Production Chart"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "has_been_culled",
+   "fieldtype": "Check",
+   "label": "Has been Culled?",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -310,7 +319,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-09-08 20:34:32.195079",
+ "modified": "2025-09-09 10:12:13.393256",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Cattle",

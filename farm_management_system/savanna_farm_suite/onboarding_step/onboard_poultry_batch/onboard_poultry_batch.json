@@ -1,0 +1,21 @@
+{
+ "action": "Create Entry",
+ "action_label": "Onboard a NEW Poultry Batch",
+ "creation": "2025-09-10 13:06:13.600096",
+ "description": "# Onboard Poultry Batch \n\nOnboarding a Poultry Batch allows you to register a new flock of birds into the farm management system. Each batch represents a group of birds of the same age or procurement cycle that are managed together.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-09-10 13:06:13.600096",
+ "modified_by": "Administrator",
+ "name": "Onboard Poultry Batch",
+ "owner": "Administrator",
+ "reference_document": "Poultry Batches",
+ "show_form_tour": 0,
+ "show_full_form": 1,
+ "title": "Onboard Poultry Batch",
+ "validate_action": 1
+}

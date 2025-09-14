@@ -1,0 +1,21 @@
+{
+ "action": "Create Entry",
+ "action_label": "Create a new Animal",
+ "creation": "2025-09-10 12:56:00.615514",
+ "description": "# Setup an Animal\nAnimals Play an Integral Part as a Masters by ensuring we properly map out those animals that we are currently domesticating.\n",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-09-10 12:56:00.615514",
+ "modified_by": "Administrator",
+ "name": "Create an Animal",
+ "owner": "Administrator",
+ "reference_document": "Animals",
+ "show_form_tour": 0,
+ "show_full_form": 1,
+ "title": "Set up all the Animals that are reared.",
+ "validate_action": 1
+}

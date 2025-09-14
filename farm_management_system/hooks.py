@@ -17,7 +17,7 @@ add_to_apps_screen = [
 		"name": "farm_management_system",
 		"logo": "/assets/farm_management_system/plants.svg",
 		"title": "Savanna Farm Suite",
-		"route": "/app/farm_management_system"
+		"route": "/app/farm-management-system"
 	}
 ]
 # Includes in <head>

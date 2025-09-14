@@ -1,0 +1,40 @@
+{
+ "cards": [],
+ "charts": [
+  {
+   "width": "Half"
+  },
+  {
+   "chart": "Daily Feed Consumption Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "Daily Feed Consumption Chart-1",
+   "width": "Half"
+  },
+  {
+   "chart": "Total Feed Expenses (This Month)",
+   "width": "Half"
+  },
+  {
+   "chart": "Current Cattle Count",
+   "width": "Half"
+  },
+  {
+   "chart": "Total Production Value per Animal Product",
+   "width": "Half"
+  }
+ ],
+ "creation": "2025-09-09 12:50:03.837584",
+ "dashboard_name": "Farm Management System",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 1,
+ "is_standard": 1,
+ "modified": "2025-09-10 12:31:49.347905",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Management System",
+ "owner": "Administrator"
+}

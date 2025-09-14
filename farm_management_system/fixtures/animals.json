@@ -3,6 +3,22 @@
   "amended_from": null,
   "animal_categories": [
    {
+    "animal_category": "toggen",
+    "parent": "Sheep",
+    "parentfield": "animal_categories",
+    "parenttype": "Animals"
+   }
+  ],
+  "animal_name": "Sheep",
+  "docstatus": 0,
+  "doctype": "Animals",
+  "modified": "2025-09-08 11:21:55.744035",
+  "name": "Sheep"
+ },
+ {
+  "amended_from": null,
+  "animal_categories": [
+   {
     "animal_category": "Dairy Cow",
     "parent": "Cattle",
     "parentfield": "animal_categories",

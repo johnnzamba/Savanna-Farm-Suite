@@ -1,0 +1,41 @@
+{
+ "allow_roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "All"
+  }
+ ],
+ "creation": "2025-09-10 13:09:35.324741",
+ "docstatus": 0,
+ "doctype": "Module Onboarding",
+ "documentation_url": "https://docs.erpnext.com/docs/user/manual/en/stock",
+ "idx": 0,
+ "is_complete": 0,
+ "modified": "2025-09-10 13:09:35.324741",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Management",
+ "owner": "Administrator",
+ "steps": [
+  {
+   "step": "Create an Animal"
+  },
+  {
+   "step": "Add Animal Feeds"
+  },
+  {
+   "step": "Add Animal Products"
+  },
+  {
+   "step": "Onboard Poultry Batch"
+  },
+  {
+   "step": "Add Livestock"
+  }
+ ],
+ "subtitle": "Animals, Animal Feeds, Animal Products and so much more.",
+ "success_message": "The Farm Module is all set up!",
+ "title": "Let's Set Up the Farm Module."
+}

@@ -1,0 +1,35 @@
+{
+ "chart_name": "Daily Feed Consumption Chart-1",
+ "chart_type": "Report",
+ "creation": "2025-09-09 12:54:04.921259",
+ "currency": "",
+ "custom_options": "{\"x_field\": \"animal_feed_name\", \"chart_type\": \"Bar\", \"y_axis_fields\": [{\"idx\": 1, \"__islocal\": true, \"y_field\": \"qty_issued\", \"color\": \"#ED6396\", \"name\": \"row 1\"}], \"y_fields\": [\"qty_issued\"], \"colors\": [\"#ED6396\"]}",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "filters_json": "{\"date_of_nourishment\":\"2025-09-09\"}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2025-09-09 12:55:36.146795",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Daily Feed Consumption Chart-1",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Daily Feed Consumption Report",
+ "roles": [],
+ "show_values_over_chart": 0,
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "animal_feed_name",
+ "y_axis": [
+  {
+   "color": "#ED6396",
+   "y_field": "qty_issued"
+  }
+ ]
+}

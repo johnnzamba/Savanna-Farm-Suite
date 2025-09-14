@@ -1,0 +1,22 @@
+{
+ "action": "Go to Page",
+ "action_label": "Let's Review Animal Feeds",
+ "callback_title": "",
+ "creation": "2025-09-10 12:59:38.352311",
+ "description": "# Setup animal feeds\nAnimal Feeds represent the different types of formulated or natural feed given to livestock or poultry on the farm. In Savanna Farm Suite, each feed can be created and maintained as an item, with details such as nutritional composition, default unit of measure, and feed category.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2025-09-10 12:59:56.748286",
+ "modified_by": "Administrator",
+ "name": "Add Animal Feeds",
+ "owner": "Administrator",
+ "path": "List/Animal Feeds",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Review Animal Feeds ",
+ "validate_action": 1
+}

@@ -16,6 +16,14 @@
   "name": "Growers"
  },
  {
+  "animal_category": "toggen",
+  "any_additional_description": null,
+  "docstatus": 0,
+  "doctype": "Animals Categories",
+  "modified": "2025-09-08 11:21:36.619748",
+  "name": "toggen"
+ },
+ {
   "animal_category": "Dairy Cow",
   "any_additional_description": null,
   "docstatus": 0,

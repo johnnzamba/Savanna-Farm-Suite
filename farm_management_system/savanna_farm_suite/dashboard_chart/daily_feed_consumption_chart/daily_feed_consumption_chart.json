@@ -1,0 +1,39 @@
+{
+ "chart_name": "Daily Feed Consumption Chart",
+ "chart_type": "Report",
+ "creation": "2025-09-09 12:50:35.816730",
+ "currency": "",
+ "custom_options": "{\"x_field\": \"date_of_nourishment\", \"chart_type\": \"Bar\", \"y_axis_fields\": [{\"idx\": 1, \"__islocal\": true, \"y_field\": \"avg_consumption\", \"color\": \"#29CD42\", \"name\": \"row 1\"}, {\"idx\": 2, \"__islocal\": true, \"y_field\": \"water_consumed\", \"color\": \"#CB2929\", \"name\": \"row 2\"}], \"y_fields\": [\"avg_consumption\", \"water_consumed\"], \"colors\": [\"#29CD42\", \"#CB2929\"]}",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "filters_json": "{\"date_of_nourishment\":\"2025-09-09\"}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2025-09-09 12:51:32.840925",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Daily Feed Consumption Chart",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Daily Feed Consumption Report",
+ "roles": [],
+ "show_values_over_chart": 0,
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "date_of_nourishment",
+ "y_axis": [
+  {
+   "color": "#29CD42",
+   "y_field": "avg_consumption"
+  },
+  {
+   "color": "#CB2929",
+   "y_field": "water_consumed"
+  }
+ ]
+}

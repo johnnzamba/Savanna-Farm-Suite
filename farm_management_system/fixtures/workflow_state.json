@@ -39,15 +39,6 @@
   "docstatus": 0,
   "doctype": "Workflow State",
   "icon": "",
-  "modified": "2025-09-02 20:58:21.927729",
-  "name": "Appointment Set for This Month",
-  "style": "Warning",
-  "workflow_state_name": "Appointment Set for This Month"
- },
- {
-  "docstatus": 0,
-  "doctype": "Workflow State",
-  "icon": "",
   "modified": "2025-09-02 20:58:54.772923",
   "name": "Appointment Set for This Week",
   "style": "Danger",
@@ -70,5 +61,14 @@
   "name": "Appointment Scheduled for Today",
   "style": "Success",
   "workflow_state_name": "Appointment Scheduled for Today"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Workflow State",
+  "icon": "",
+  "modified": "2025-09-02 20:58:21.927729",
+  "name": "Appointment Set for This Month",
+  "style": "Warning",
+  "workflow_state_name": "Appointment Set for This Month"
  }
 ]

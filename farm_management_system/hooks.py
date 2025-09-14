@@ -86,6 +86,10 @@ fixtures = [
     {
         "dt": "Location",
         "filters": [["name", "in", ["Default"]]]
+    },
+    {
+        "dt": "Workspace",
+        "filters": [["name", "in", ["Farm Management System"]]]
     }
 ]
 

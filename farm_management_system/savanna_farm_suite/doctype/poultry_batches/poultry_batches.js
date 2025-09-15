@@ -3,22 +3,14 @@
 
 frappe.ui.form.on("Poultry Batches", {
 	refresh(frm) {
-        if (!frm.is_new()) {
-            render_collection_chart(frm);
-            render_nourishment_chart(frm);
-        }
-        update_batch_intro (frm);
+		// Always update intro and average weight; set default received date for new docs
+		update_batch_intro(frm);
+
 		if (frm.is_new() && !frm.doc.animals_received_on) {
 			frm.set_value("animals_received_on", frappe.datetime.get_today());
 		}
-        if (frm.doc.batch_status) {
-            let color = "gray";
-            if (frm.doc.batch_status === "Active") color = "green";
-            else if (frm.doc.batch_status === "Partially Sold") color = "yellow";
-            else if (frm.doc.batch_status === "Culled") color = "red";
 
-            frm.page.set_indicator(frm.doc.batch_status, color);
-        }
+		// Keep LPO query available even on new docs (filters by received_from)
 		frm.set_query("lpo", function() {
 			const supplier = frm.doc.received_from;
 			const filters = supplier ? { supplier: supplier } : {};
@@ -28,58 +20,84 @@ frappe.ui.form.on("Poultry Batches", {
 				query: undefined
 			};
 		});
+
 		update_average_weight(frm);
 
-        if (!frm.doc.name) return;
-        frappe.call({
-        method: "farm_management_system.savanna_farm_suite.doctype.nourishment_log.nourishment_log.get_batch_totals",
-        args: {
-            batch_name: frm.doc.name
-        },
-        callback: function(r) {
-            if (!r || !r.message) return;
-            const res = r.message;
-            if (res.total_feed !== undefined) {
-            frm.set_value("total_feed", res.total_feed || "");
-            frm.fields_dict["total_feed"] && frm.refresh_field("total_feed");
-            }
-            if (res.total_water !== undefined) {
-            frm.set_value("total_water", res.total_water || "");
-            frm.fields_dict["total_water"] && frm.refresh_field("total_water");
-            }
-        }
-        });
+		// Only run the following once the document has been saved (not a new draft)
+		if (!frm.is_new()) {
+			// Render charts that rely on persisted data
+			render_collection_chart(frm);
+			render_nourishment_chart(frm);
 
-        if (!frm.doc || !frm.doc.name) return;
-		if (frm.__syncing_treatments) return;
-		try {
-			const k = `poultry_sync_suppress_${frm.doc.name}`;
-			const ts = window.sessionStorage ? Number(window.sessionStorage.getItem(k) || 0) : 0;
-			if (ts && Date.now() - ts < 5000) return;
-		} catch (e) {}
+			// Page indicator for batch status
+			if (frm.doc.batch_status) {
+				let color = "gray";
+				if (frm.doc.batch_status === "Active") color = "green";
+				else if (frm.doc.batch_status === "Partially Sold") color = "yellow";
+				else if (frm.doc.batch_status === "Culled") color = "red";
 
-		frm.__syncing_treatments = true;
-		syncPoultryTreatmentLogs(frm).always(() => {
-			frm.__syncing_treatments = false;
-		});
+				frm.page.set_indicator(frm.doc.batch_status, color);
+			}
 
-        renderTreatmentChart(frm);
-		try {
-			const tableWrapper = frm.get_field('treatment_and_vaccination_log') ? frm.get_field('treatment_and_vaccination_log').$wrapper.get(0) : null;
-			if (tableWrapper) {
-				if (!tableWrapper._treatment_chart_observer) {
-					const mo = new MutationObserver(() => {
-						if (tableWrapper._treatment_chart_timer) clearTimeout(tableWrapper._treatment_chart_timer);
-						tableWrapper._treatment_chart_timer = setTimeout(() => {
-							renderTreatmentChart(frm);
-						}, 150);
+			// Fetch total feed/water aggregates for this batch
+			if (frm.doc.name) {
+				frappe.call({
+					method: "farm_management_system.savanna_farm_suite.doctype.nourishment_log.nourishment_log.get_batch_totals",
+					args: { batch_name: frm.doc.name },
+					callback: function(r) {
+						if (!r || !r.message) return;
+						const res = r.message;
+						if (res.total_feed !== undefined) {
+							frm.set_value("total_feed", res.total_feed || "");
+							frm.fields_dict["total_feed"] && frm.refresh_field("total_feed");
+						}
+						if (res.total_water !== undefined) {
+							frm.set_value("total_water", res.total_water || "");
+							frm.fields_dict["total_water"] && frm.refresh_field("total_water");
+						}
+					}
+				});
+			}
+
+			// Sync treatment logs (avoid re-entrancy)
+			if (frm.doc && frm.doc.name && !frm.__syncing_treatments) {
+				try {
+					const k = `poultry_sync_suppress_${frm.doc.name}`;
+					const ts = window.sessionStorage ? Number(window.sessionStorage.getItem(k) || 0) : 0;
+					if (!ts || Date.now() - ts >= 5000) {
+						frm.__syncing_treatments = true;
+						syncPoultryTreatmentLogs(frm).always(() => {
+							frm.__syncing_treatments = false;
+						});
+					}
+				} catch (e) {
+					// fallback to syncing without suppression
+					frm.__syncing_treatments = true;
+					syncPoultryTreatmentLogs(frm).always(() => {
+						frm.__syncing_treatments = false;
 					});
-					mo.observe(tableWrapper, { childList: true, subtree: true, attributes: true, characterData: true });
-					tableWrapper._treatment_chart_observer = mo;
 				}
 			}
-		} catch (e) {
-			console.error('treatment chart observer error', e);
+
+			// Render treatment chart and observe table changes to re-render
+			renderTreatmentChart(frm);
+			try {
+				const tableWrapper = frm.get_field('treatment_and_vaccination_log') ? frm.get_field('treatment_and_vaccination_log').$wrapper.get(0) : null;
+				if (tableWrapper) {
+					if (!tableWrapper._treatment_chart_observer) {
+						const mo = new MutationObserver(() => {
+							if (tableWrapper._treatment_chart_timer) clearTimeout(tableWrapper._treatment_chart_timer);
+							tableWrapper._treatment_chart_timer = setTimeout(() => {
+								renderTreatmentChart(frm);
+							}, 150);
+						});
+						mo.observe(tableWrapper, { childList: true, subtree: true, attributes: true, characterData: true });
+						tableWrapper._treatment_chart_observer = mo;
+					}
+				}
+			} catch (e) {
+				console.error('treatment chart observer error', e);
+			}
 		}
 	},
 

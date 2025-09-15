@@ -19,7 +19,7 @@ class Cattle(Document):
         if not self.image_of_animal:
             self.generate_avatar()
         if self.cow_shed:
-            shed = frappe.get_doc("Cow Shed", self.cow_shed)
+            shed = frappe.get_doc("Cattle Shed", self.cow_shed)
             current_count_str = shed.current_animal_count or "0 Cows"
             try:
                 number = int(current_count_str.split()[0])

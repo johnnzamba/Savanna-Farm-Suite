@@ -84,10 +84,6 @@ fixtures = [
         "dt": "Animals Categories"
     },
     {
-        "dt": "Asset Category",
-        "filters": [["name", "in", ["Default Livestock Category"]]]
-    },
-    {
         "dt": "Location",
         "filters": [["name", "in", ["Default"]]]
     },
@@ -145,6 +141,7 @@ fixtures = [
 
 # Installation
 # ------------
+after_migrate = "farm_management_system.config.install.create_default_asset_category"
 
 # before_install = "farm_management_system.install.before_install"
 # after_install = "farm_management_system.install.after_install"

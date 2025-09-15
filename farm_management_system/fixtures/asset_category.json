@@ -1,0 +1,24 @@
+[
+ {
+  "accounts": [
+   {
+    "accumulated_depreciation_account": null,
+    "capital_work_in_progress_account": null,
+    "company_name": "WairyKim Farm",
+    "depreciation_expense_account": null,
+    "fixed_asset_account": "Capital Equipments - WKF",
+    "parent": "Default Livestock Category",
+    "parentfield": "accounts",
+    "parenttype": "Asset Category"
+   }
+  ],
+  "asset_category_name": "Default Livestock Category",
+  "docstatus": 0,
+  "doctype": "Asset Category",
+  "enable_cwip_accounting": 0,
+  "finance_books": [],
+  "modified": "2025-09-06 23:22:51.676312",
+  "name": "Default Livestock Category",
+  "non_depreciable_category": 0
+ }
+]

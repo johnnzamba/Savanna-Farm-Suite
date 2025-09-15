@@ -84,6 +84,10 @@ fixtures = [
         "dt": "Animals Categories"
     },
     {
+        "dt": "Asset Category",
+        "filters": [["name", "in", ["Default Livestock Category"]]]
+    },
+    {
         "dt": "Location",
         "filters": [["name", "in", ["Default"]]]
     },

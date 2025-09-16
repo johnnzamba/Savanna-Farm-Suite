@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-16 14:11:58.252943",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "crop_seedsseedlings_planted",
+  "farming_season",
+  "plot_of_land_being_farmed",
+  "planting_date",
+  "quantity_of_seedsseedlings_planted",
+  "seedsseedlings_uom",
+  "linked_to_goods_received_note"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "farming_season",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Farming Season",
+   "options": "Farming Season",
+   "width": "2"
+  },
+  {
+   "bold": 1,
+   "fieldname": "crop_seedsseedlings_planted",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Crop Seeds/Seedlings planted",
+   "options": "Crop Seedlings",
+   "width": "2"
+  },
+  {
+   "fieldname": "planting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Planting Date",
+   "width": "2"
+  },
+  {
+   "bold": 1,
+   "fieldname": "quantity_of_seedsseedlings_planted",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity of Seeds/Seedlings Planted",
+   "non_negative": 1,
+   "width": "1"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "crop_seedsseedlings_planted.specify_unit_of_measurement",
+   "fetch_if_empty": 1,
+   "fieldname": "seedsseedlings_uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Seeds/Seedlings UOM",
+   "options": "UOM",
+   "width": "1"
+  },
+  {
+   "fieldname": "linked_to_goods_received_note",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Linked to Goods Received Note",
+   "options": "Purchase Receipt",
+   "width": "1"
+  },
+  {
+   "fieldname": "plot_of_land_being_farmed",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Plot of Land being Farmed",
+   "options": "Farm Plots",
+   "width": "1"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-09-16 15:14:16.072525",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Plot History Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,77 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-16 14:07:14.817868",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "seedling_tied_to_which_crop",
+  "specify_unit_of_measurement",
+  "name_of_variant_optional",
+  "history_of_purchases_made",
+  "stock_trends"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "seedling_tied_to_which_crop",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Seedling tied to which Crop?",
+   "options": "Crop",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "bold": 1,
+   "fieldname": "name_of_variant_optional",
+   "fieldtype": "Data",
+   "label": "Name of Variant (Optional)"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "description": "For Example: Piece",
+   "fieldname": "specify_unit_of_measurement",
+   "fieldtype": "Link",
+   "label": "Specify Unit of Measurement",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "history_of_purchases_made",
+   "fieldtype": "HTML",
+   "label": "History of Purchases made"
+  },
+  {
+   "fieldname": "stock_trends",
+   "fieldtype": "HTML",
+   "label": "Stock Trends"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-16 15:17:48.843455",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Crop Seedlings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

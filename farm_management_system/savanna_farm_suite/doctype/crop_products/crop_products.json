@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:product_name",
+ "creation": "2025-09-18 03:57:04.323939",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "product_name",
+  "crop",
+  "default_uom",
+  "additional_notes",
+  "stock_level_trends"
+ ],
+ "fields": [
+  {
+   "fieldname": "product_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name of the crop product",
+   "placeholder": "EXAMPLE: Red Tomato",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "crop",
+   "fieldtype": "Link",
+   "label": "Crop from which this product comes",
+   "options": "Crop",
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "default": "Nos",
+   "fieldname": "default_uom",
+   "fieldtype": "Link",
+   "label": "Specify the Product's Default UOM",
+   "options": "UOM",
+   "reqd": 1
+  },
+  {
+   "fieldname": "additional_notes",
+   "fieldtype": "Small Text",
+   "label": "Notes on quality, grade, usage."
+  },
+  {
+   "fieldname": "stock_level_trends",
+   "fieldtype": "HTML",
+   "label": "Stock Level Trends"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-18 16:12:04.774487",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Crop Products",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

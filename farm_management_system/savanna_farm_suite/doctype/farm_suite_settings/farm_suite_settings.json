@@ -1,0 +1,69 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-17 10:16:37.024287",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "reminders_for_farming_schedules_section",
+  "enable_reminders_for_farming_schedules",
+  "specify_number_of_days_for_initial_reminder",
+  "specify_number_of_days_after_missed_schedule"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "enable_reminders_for_farming_schedules",
+   "fieldtype": "Check",
+   "label": "Enable Reminders for Farming Schedules"
+  },
+  {
+   "depends_on": "eval:doc.enable_reminders_for_farming_schedules == 1",
+   "description": "Please Note: Indicates number of days before the set date of Activity. Use commas for multiple days.",
+   "fieldname": "specify_number_of_days_for_initial_reminder",
+   "fieldtype": "Data",
+   "label": "Specify Number of Days for Initial Reminder",
+   "placeholder": "EXAMPLE: 3, 7 etc..."
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.enable_reminders_for_farming_schedules == 1",
+   "description": "This indicates the number of days to elapse after Schedule remains unattended; before a reminder is sent.",
+   "fieldname": "specify_number_of_days_after_missed_schedule",
+   "fieldtype": "Data",
+   "label": "Specify Number of Days after Missed Schedule",
+   "placeholder": "EXAMPLE: 1, 3, 7 etc.."
+  },
+  {
+   "fieldname": "reminders_for_farming_schedules_section",
+   "fieldtype": "Section Break",
+   "label": "Reminders for Farming Schedules"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-09-17 10:24:16.835108",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Suite Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

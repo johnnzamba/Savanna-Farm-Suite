@@ -24,11 +24,16 @@ add_to_apps_screen = [
 # ------------------
 
 # include js, css files in header of desk.html
-app_include_css = "/assets/farm_management_system/css/banners.css"
+app_include_css = [
+    "/assets/farm_management_system/css/banners.css",
+    "/assets/farm_management_system/css//farm_activity_schedule.css"
+]
 app_include_js = [ 
     "/assets/farm_management_system/js/banners.js", 
     "/assets/farm_management_system/js/poultry_batches_listview.js",
-    "/assets/farm_management_system/js/cattle_listview.js"
+    "/assets/farm_management_system/js/cattle_listview.js",
+    "/assets/farm_management_system/js/farm_activity_schedule_calendar.js"
+    # "/assets/farm_management_system/js/farm_activity_gantt.js"
 ]
 
 # include js, css files in header of web template
@@ -70,7 +75,7 @@ fixtures = [
     },
     {
         "dt": "Client Script",
-        "filters": [["name", "in", ["Poultry Batch"]]]
+        "filters": [["name", "in", ["Poultry Batch", "Calendar HTML", "Render Chart", "Process Farming Activity"]]]
 
     },
     {
@@ -93,8 +98,11 @@ fixtures = [
     }
 ]
 
+calendars = ["Farm Activity Schedule"]
+
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
+
 # doctype,
 # _list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -141,7 +149,10 @@ fixtures = [
 
 # Installation
 # ------------
-after_migrate = "farm_management_system.config.install.create_default_asset_category"
+after_migrate = [
+    "farm_management_system.config.install.create_default_asset_category",
+    "farm_management_system.config.install.create_default_expense_accounts",
+]
 
 # before_install = "farm_management_system.install.before_install"
 # after_install = "farm_management_system.install.after_install"

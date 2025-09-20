@@ -1,0 +1,172 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "field:vaccine_name",
+ "creation": "2025-09-17 12:34:55.989906",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "important_feed_details_tab",
+  "specify_feed_details_section",
+  "vaccine_name",
+  "crop_agent",
+  "uom",
+  "feed_supplier",
+  "column_break_dmcp",
+  "cost_of_the_vaccine",
+  "important_notes_for_this_agent",
+  "image_of_vaccine",
+  "auto_reorder",
+  "reorder_level",
+  "reorder_qty",
+  "stock_level_and_costs_tab",
+  "history_of_vax_purchases",
+  "html_dgyh"
+ ],
+ "fields": [
+  {
+   "fieldname": "important_feed_details_tab",
+   "fieldtype": "Tab Break",
+   "label": "Important Farm Input Details"
+  },
+  {
+   "fieldname": "specify_feed_details_section",
+   "fieldtype": "Section Break",
+   "label": "Specify Farm Agent Details"
+  },
+  {
+   "bold": 1,
+   "description": "Example: Repellents",
+   "fieldname": "vaccine_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name of the Farming Agent",
+   "placeholder": "Insect Repellents",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "bold": 1,
+   "default": "Kg",
+   "fieldname": "uom",
+   "fieldtype": "Link",
+   "label": "Agent Administered in which UOM?",
+   "options": "UOM",
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "description": "Multiple Selection Allowed.",
+   "fieldname": "feed_supplier",
+   "fieldtype": "Table MultiSelect",
+   "label": "Select Supplier(s) for this Farm Input",
+   "options": "Animal Feeds Suppliers"
+  },
+  {
+   "fieldname": "column_break_dmcp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "fieldname": "cost_of_the_vaccine",
+   "fieldtype": "Currency",
+   "label": "Cost of the Farm Input",
+   "non_negative": 1,
+   "precision": "3"
+  },
+  {
+   "bold": 1,
+   "fieldname": "image_of_vaccine",
+   "fieldtype": "Attach Image",
+   "label": "Image of Farm Input (ATTACH)"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "description": "When the stock drops below the set reorder level, the system can automatically create a Material Request for that item to be purchased or transferred.",
+   "fieldname": "auto_reorder",
+   "fieldtype": "Check",
+   "label": "Allow Auto-Reorder"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.auto_reorder == 1",
+   "description": "This is the minimum quantity of an item you want to have in stock before a reorder is triggered. ",
+   "fieldname": "reorder_level",
+   "fieldtype": "Float",
+   "label": "Set Re-Order Level",
+   "mandatory_depends_on": "eval:doc.auto_reorder == 1",
+   "precision": "2"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.reorder_level",
+   "description": "This is the quantity of the item to be reordered when the reorder level is reached. ",
+   "fieldname": "reorder_qty",
+   "fieldtype": "Float",
+   "label": "Set  Quantity to Re-Order",
+   "mandatory_depends_on": "eval:doc.reorder_level",
+   "precision": "3"
+  },
+  {
+   "depends_on": "eval:doc.name",
+   "fieldname": "stock_level_and_costs_tab",
+   "fieldtype": "Tab Break",
+   "label": "Stock Level and Costs"
+  },
+  {
+   "fieldname": "history_of_vax_purchases",
+   "fieldtype": "HTML",
+   "label": "History of Purchases made"
+  },
+  {
+   "fieldname": "html_dgyh",
+   "fieldtype": "HTML"
+  },
+  {
+   "bold": 1,
+   "description": "MULTIPLE SELECTION ALLOWED.",
+   "fieldname": "crop_agent",
+   "fieldtype": "Table MultiSelect",
+   "label": "Farming Agent Administered to which Crops?",
+   "options": "Crops Multiselect"
+  },
+  {
+   "bold": 1,
+   "description": "EXAMPLE: Toxicity/Anti-Nutritional Factors",
+   "fieldname": "important_notes_for_this_agent",
+   "fieldtype": "Small Text",
+   "label": "Important Notes on this Farming Agent"
+  }
+ ],
+ "grid_page_length": 50,
+ "image_field": "image_of_vaccine",
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-19 18:24:17.631432",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Inputs",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "search_fields": "vaccine_name,cost_of_the_vaccine",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "vaccine_name"
+}

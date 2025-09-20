@@ -132,3 +132,48 @@ def create_default_asset_category():
     except Exception:
         frappe.log_error(frappe.get_traceback(), "Create Default Asset Category Error")
         return
+
+
+import frappe
+
+def create_default_expense_accounts():
+    # Get default company from Global Defaults
+    default_company = frappe.db.get_single_value('Global Defaults', 'default_company')
+    if not default_company:
+        return  # No default company set, skip
+
+    # Get default currency from Global Defaults, fallback to 'KES'
+    default_currency = frappe.db.get_single_value('Global Defaults', 'default_currency') or 'KES'
+
+    # Get all companies including the default one
+    companies = frappe.get_all('Company', fields=['name', 'abbr'])
+
+    for company in companies:
+        comp_name = company.name
+        abbr = company.abbr
+
+        # Define parent and new account full names
+        parent_account = f"Direct Expenses - {abbr}"
+        full_account_name = f"Casual Loading Expense - {abbr}"
+
+        # Confirm if parent_account exists for this company
+        if not frappe.db.exists('Account', parent_account):
+            continue  # Skip if parent does not exist
+
+        # Check if the account already exists to avoid duplicates
+        if frappe.db.exists('Account', full_account_name):
+            continue  # Skip if already exists
+
+        # Create the new account
+        account = frappe.get_doc({
+            'doctype': 'Account',
+            'account_name': 'Casual Loading Expense',
+            'company': comp_name,
+            'root_type': 'Expense',
+            'report_type': 'Profit and Loss',
+            'account_currency': default_currency,
+            'parent_account': parent_account,
+            'freeze_account': 'No',
+            'is_group': 0  # Assuming it's a leaf account
+        })
+        account.insert(ignore_permissions=True)

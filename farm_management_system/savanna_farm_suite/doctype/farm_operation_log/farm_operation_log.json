@@ -1,0 +1,178 @@
+{
+ "actions": [],
+ "autoname": " FAOL-.###.-.YYYY./.MM.",
+ "creation": "2025-09-17 12:22:53.192490",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "important_details_of_this_activity_section",
+  "specify_the_date_of_activity",
+  "farming_season_when_activity_was_conducted",
+  "farming_activity_conducted_in_which_plot",
+  "farming_activity_tied_to_which_crop",
+  "farming_activity_tied_to_which_crop_batch",
+  "total_hrs",
+  "column_break_qvjf",
+  "specify_the_nature_of_activities",
+  "staff_members_involved",
+  "specify_the_farm_inputs_used",
+  "additional_information_section",
+  "proof_of_work",
+  "description",
+  "activity_logs_section",
+  "labourer_records",
+  "labour_cost_visualization",
+  "material_records",
+  "usage_analysis"
+ ],
+ "fields": [
+  {
+   "fieldname": "important_details_of_this_activity_section",
+   "fieldtype": "Section Break",
+   "label": "Important Details of this Activity"
+  },
+  {
+   "bold": 1,
+   "fieldname": "specify_the_date_of_activity",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Specify the Date of Activity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "farming_season_when_activity_was_conducted",
+   "fieldtype": "Link",
+   "label": "Farming Season when Activity was Conducted",
+   "options": "Farming Season"
+  },
+  {
+   "bold": 1,
+   "fieldname": "farming_activity_conducted_in_which_plot",
+   "fieldtype": "Link",
+   "label": "Farming Activity conducted in which Plot?",
+   "options": "Farm Plots"
+  },
+  {
+   "fieldname": "farming_activity_tied_to_which_crop",
+   "fieldtype": "Link",
+   "label": "Farming Activity tied to which Crop?",
+   "options": "Crop Seedlings"
+  },
+  {
+   "fieldname": "column_break_qvjf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "bold": 1,
+   "description": "Multiple Selection Allowed.",
+   "fieldname": "specify_the_nature_of_activities",
+   "fieldtype": "Table",
+   "label": "Specify the Nature of Activities ",
+   "options": "Farm Activity Multiselect",
+   "read_only": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "A Brief description of what was done"
+  },
+  {
+   "bold": 1,
+   "fieldname": "total_hrs",
+   "fieldtype": "Float",
+   "label": "Total Man Hours used in this Activity",
+   "precision": "2"
+  },
+  {
+   "fieldname": "additional_information_section",
+   "fieldtype": "Section Break",
+   "label": "Additional Information"
+  },
+  {
+   "description": "Multiple Selection Allowed.",
+   "fieldname": "specify_the_farm_inputs_used",
+   "fieldtype": "Table",
+   "label": "Specify the Farm inputs used",
+   "options": "Farm Inputs Multiselect"
+  },
+  {
+   "bold": 1,
+   "description": "Provide Image or document as proof of work done.",
+   "fieldname": "proof_of_work",
+   "fieldtype": "Attach",
+   "label": "Proof of Work"
+  },
+  {
+   "fieldname": "labourer_records",
+   "fieldtype": "Table",
+   "label": "Labourer Records",
+   "options": "Farm Operations Labour Table",
+   "read_only": 1
+  },
+  {
+   "fieldname": "labour_cost_visualization",
+   "fieldtype": "HTML",
+   "label": "Labour Cost Visualization"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "activity_logs_section",
+   "fieldtype": "Section Break",
+   "label": "Activity Logs"
+  },
+  {
+   "fieldname": "material_records",
+   "fieldtype": "Table",
+   "label": "Material Records",
+   "options": "Farm Operations Material Table"
+  },
+  {
+   "fieldname": "usage_analysis",
+   "fieldtype": "HTML",
+   "label": "Usage Analysis"
+  },
+  {
+   "fieldname": "farming_activity_tied_to_which_crop_batch",
+   "fieldtype": "Link",
+   "label": "Farming Activity tied to which Crop Batch?",
+   "options": "Crop Intake"
+  },
+  {
+   "bold": 1,
+   "fieldname": "staff_members_involved",
+   "fieldtype": "Table",
+   "label": "Staff Members Involved",
+   "options": "Farm Workers",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "in_create": 1,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-09-20 17:22:20.942059",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Operation Log",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "read_only": 1,
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

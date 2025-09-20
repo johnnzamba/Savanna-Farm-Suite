@@ -6,23 +6,22 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "crop_seedsseedlings_planted",
+  "planting_date",
   "farming_season",
   "plot_of_land_being_farmed",
-  "planting_date",
-  "quantity_of_seedsseedlings_planted",
+  "crop_seedsseedlings_planted",
   "seedsseedlings_uom",
-  "linked_to_goods_received_note"
+  "quantity_of_seedsseedlings_planted",
+  "linked_to_batch",
+  "click_to_review_batch"
  ],
  "fields": [
   {
    "bold": 1,
    "fieldname": "farming_season",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Farming Season",
-   "options": "Farming Season",
-   "width": "2"
+   "options": "Farming Season"
   },
   {
    "bold": 1,
@@ -61,19 +60,27 @@
    "width": "1"
   },
   {
-   "fieldname": "linked_to_goods_received_note",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Linked to Goods Received Note",
-   "options": "Purchase Receipt",
-   "width": "1"
-  },
-  {
    "fieldname": "plot_of_land_being_farmed",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Plot of Land being Farmed",
    "options": "Farm Plots",
+   "width": "2"
+  },
+  {
+   "fieldname": "linked_to_batch",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Linked to Crop Batch",
+   "options": "Crop Intake",
+   "width": "2"
+  },
+  {
+   "bold": 1,
+   "fieldname": "click_to_review_batch",
+   "fieldtype": "Button",
+   "in_list_view": 1,
+   "label": "Click to Review Batch",
    "width": "1"
   }
  ],
@@ -81,7 +88,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-09-16 15:14:16.072525",
+ "modified": "2025-09-20 23:53:32.509714",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Farm Plot History Table",

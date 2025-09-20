@@ -1,0 +1,35 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-17 12:44:30.542806",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "select_the_farm_input"
+ ],
+ "fields": [
+  {
+   "fieldname": "select_the_farm_input",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Select the Farm Input",
+   "options": "Farm Inputs",
+   "width": "2"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-09-20 17:10:45.145169",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Inputs Multiselect",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

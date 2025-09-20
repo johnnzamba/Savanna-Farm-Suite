@@ -1,0 +1,126 @@
+{
+ "actions": [],
+ "autoname": "SCHEDULE-.###.-.YYYY./.MM.",
+ "creation": "2025-09-17 12:05:39.605293",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_rkdi",
+  "amended_from",
+  "farming_season",
+  "farm_plot",
+  "schedule_applicable_for_crop",
+  "activity_tied_to_which_crop_batch",
+  "column_break_tcnw",
+  "schedule_start_date",
+  "scheduled_end_date",
+  "important_notes",
+  "activity_tracker_section",
+  "scheduled_activity_table"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_rkdi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Farm Activity Schedule",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "farming_season",
+   "fieldtype": "Link",
+   "label": "Farm Schedule Applicable to which Farming Season?",
+   "options": "Farming Season"
+  },
+  {
+   "fieldname": "farm_plot",
+   "fieldtype": "Link",
+   "label": "Schedule Applies to Farm Plot?",
+   "options": "Farm Plots"
+  },
+  {
+   "fieldname": "schedule_applicable_for_crop",
+   "fieldtype": "Link",
+   "label": "Schedule Applicable to which Crop?",
+   "options": "Crop Seedlings"
+  },
+  {
+   "fieldname": "column_break_tcnw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "schedule_start_date",
+   "fieldtype": "Date",
+   "label": "Schedule Start Date"
+  },
+  {
+   "fieldname": "scheduled_end_date",
+   "fieldtype": "Date",
+   "label": "Scheduled End Date"
+  },
+  {
+   "fieldname": "important_notes",
+   "fieldtype": "Small Text",
+   "label": "Important Notes"
+  },
+  {
+   "fieldname": "activity_tracker_section",
+   "fieldtype": "Section Break",
+   "label": "Activity Tracker"
+  },
+  {
+   "allow_on_submit": 1,
+   "bold": 1,
+   "description": "AUTOPOPULATES",
+   "fieldname": "scheduled_activity_table",
+   "fieldtype": "Table",
+   "label": "Scheduled Activity Table",
+   "options": "Scheduled Activity Table",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "activity_tied_to_which_crop_batch",
+   "fieldtype": "Link",
+   "label": "Activity Tied to which Crop Batch?",
+   "options": "Crop Intake"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_calendar_and_gantt": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-09-18 17:52:04.602642",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Activity Schedule",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,84 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-17 12:50:08.680420",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "employee_involved",
+  "full_names",
+  "total_man_hours_spent",
+  "generated_voucher",
+  "voucher_amount",
+  "click_to_check_voucher"
+ ],
+ "fields": [
+  {
+   "fieldname": "employee_involved",
+   "fieldtype": "Link",
+   "label": "Employee Involved",
+   "options": "Employee"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "employee_involved.employee_name",
+   "fetch_if_empty": 1,
+   "fieldname": "full_names",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Names",
+   "read_only": 1,
+   "width": "2"
+  },
+  {
+   "fieldname": "total_man_hours_spent",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total Man Hours Spent",
+   "precision": "2",
+   "width": "2"
+  },
+  {
+   "description": "Please Note: Expense Vouchers are Generated upon completion of work.",
+   "fieldname": "generated_voucher",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Generated Voucher ",
+   "options": "Petty Cash Voucher",
+   "width": "2"
+  },
+  {
+   "fieldname": "click_to_check_voucher",
+   "fieldtype": "Button",
+   "in_list_view": 1,
+   "label": "Click to Check Voucher",
+   "width": "2"
+  },
+  {
+   "bold": 1,
+   "fetch_from": "generated_voucher.total_amount_paid",
+   "fetch_if_empty": 1,
+   "fieldname": "voucher_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Voucher Amount",
+   "read_only": 1,
+   "width": "2"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-09-20 20:18:30.978306",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Operations Labour Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-17 12:58:38.323452",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "farm_input_used",
+  "inputs_default_uom",
+  "quantity_of_agent_used",
+  "check_usage"
+ ],
+ "fields": [
+  {
+   "fieldname": "farm_input_used",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Farm Input Used",
+   "options": "Farm Inputs",
+   "width": "2"
+  },
+  {
+   "fetch_from": "farm_input_used.uom",
+   "fetch_if_empty": 1,
+   "fieldname": "inputs_default_uom",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Input's Default UOM",
+   "options": "UOM",
+   "width": "2"
+  },
+  {
+   "fieldname": "quantity_of_agent_used",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity of Agent Used",
+   "precision": "3",
+   "width": "2"
+  },
+  {
+   "fieldname": "check_usage",
+   "fieldtype": "Button",
+   "in_list_view": 1,
+   "label": "Click to check Usage",
+   "width": "2"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-09-17 13:11:04.284957",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Farm Operations Material Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

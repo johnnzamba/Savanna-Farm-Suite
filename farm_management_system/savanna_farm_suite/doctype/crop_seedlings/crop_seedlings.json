@@ -1,12 +1,14 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:name_of_variant_optional",
  "creation": "2025-09-16 14:07:14.817868",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "seedling_tied_to_which_crop",
   "specify_unit_of_measurement",
+  "unit_purchase_price",
   "name_of_variant_optional",
   "history_of_purchases_made",
   "stock_trends"
@@ -26,7 +28,8 @@
    "bold": 1,
    "fieldname": "name_of_variant_optional",
    "fieldtype": "Data",
-   "label": "Name of Variant (Optional)"
+   "label": "Name of Seedling Variant",
+   "unique": 1
   },
   {
    "allow_in_quick_entry": 1,
@@ -45,15 +48,27 @@
    "fieldname": "stock_trends",
    "fieldtype": "HTML",
    "label": "Stock Trends"
+  },
+  {
+   "fieldname": "unit_purchase_price",
+   "fieldtype": "Currency",
+   "label": "Unit Purchase Price",
+   "precision": "2"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-09-16 15:17:48.843455",
+ "links": [
+  {
+   "link_doctype": "Crop Intake",
+   "link_fieldname": "crop_being_planted"
+  }
+ ],
+ "modified": "2025-09-20 23:42:14.280031",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Crop Seedlings",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

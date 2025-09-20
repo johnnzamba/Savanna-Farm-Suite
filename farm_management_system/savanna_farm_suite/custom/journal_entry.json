@@ -1,0 +1,73 @@
+{
+ "custom_fields": [],
+ "custom_perms": [],
+ "doctype": "Journal Entry",
+ "links": [
+  {
+   "creation": "2022-01-25 10:29:58.717206",
+   "custom": 0,
+   "docstatus": 0,
+   "group": null,
+   "hidden": 0,
+   "idx": 1,
+   "is_child_table": 1,
+   "link_doctype": "Bank Transaction Payments",
+   "link_fieldname": "payment_entry",
+   "modified": "2025-08-30 22:14:52.207905",
+   "modified_by": "Administrator",
+   "name": "a9a9q598tc",
+   "owner": "Administrator",
+   "parent": "Journal Entry",
+   "parent_doctype": "Bank Transaction",
+   "parentfield": "links",
+   "parenttype": "DocType",
+   "table_fieldname": "payment_entries"
+  },
+  {
+   "creation": "2025-09-20 23:18:10.679872",
+   "custom": 1,
+   "docstatus": 0,
+   "group": null,
+   "hidden": 0,
+   "idx": 1,
+   "is_child_table": 0,
+   "link_doctype": "Petty Cash Voucher",
+   "link_fieldname": "journal_entry_created",
+   "modified": "2025-09-20 23:18:18.499818",
+   "modified_by": "Administrator",
+   "name": "u0qcn6ijri",
+   "owner": "Administrator",
+   "parent": "Journal Entry",
+   "parent_doctype": null,
+   "parentfield": "links",
+   "parenttype": "Customize Form",
+   "table_fieldname": null
+  }
+ ],
+ "property_setters": [
+  {
+   "_assign": null,
+   "_comments": null,
+   "_liked_by": null,
+   "_user_tags": null,
+   "creation": "2025-09-20 23:18:18.676364",
+   "default_value": null,
+   "doc_type": "Journal Entry",
+   "docstatus": 0,
+   "doctype_or_field": "DocType",
+   "field_name": null,
+   "idx": 0,
+   "is_system_generated": 0,
+   "modified": "2025-09-20 23:18:18.676364",
+   "modified_by": "Administrator",
+   "module": null,
+   "name": "Journal Entry-main-links_order",
+   "owner": "Administrator",
+   "property": "links_order",
+   "property_type": "Small Text",
+   "row_name": null,
+   "value": "[\"a9a9q598tc\", \"u0qcn6ijri\"]"
+  }
+ ],
+ "sync_on_migrate": 1
+}

@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-17 09:56:39.268961",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "scheduled_date",
+  "activity_being_undertaken",
+  "workers_involved_in_exercise",
+  "staff_name",
+  "status",
+  "referenced_schedule_document",
+  "review_schedule"
+ ],
+ "fields": [
+  {
+   "bold": 1,
+   "fieldname": "scheduled_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Scheduled Date",
+   "width": "2"
+  },
+  {
+   "bold": 1,
+   "fieldname": "workers_involved_in_exercise",
+   "fieldtype": "Link",
+   "label": "Staff Assigned",
+   "options": "Employee",
+   "width": "3"
+  },
+  {
+   "bold": 1,
+   "fieldname": "status",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status",
+   "width": "2"
+  },
+  {
+   "bold": 1,
+   "description": "Click to Review Intake Schedule",
+   "fieldname": "review_schedule",
+   "fieldtype": "Button",
+   "in_list_view": 1,
+   "label": "Review Schedule",
+   "width": "2"
+  },
+  {
+   "bold": 1,
+   "fieldname": "activity_being_undertaken",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Activity being Undertaken",
+   "options": "Crop Activity",
+   "width": "2"
+  },
+  {
+   "bold": 1,
+   "fieldname": "referenced_schedule_document",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Referenced Schedule Document",
+   "options": "Farm Activity Schedule",
+   "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fetch_from": "workers_involved_in_exercise.employee_name",
+   "fieldname": "staff_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Staff Name",
+   "read_only": 1,
+   "width": "2"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-09-18 21:33:11.546000",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Crop Intake Schedule table",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

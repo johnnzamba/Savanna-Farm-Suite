@@ -8,7 +8,9 @@
  "field_order": [
   "important_details_of_this_farm_section",
   "farm_name",
+  "short_code",
   "land_acres",
+  "estimate_in_acres",
   "company",
   "lft",
   "rgt",
@@ -38,10 +40,12 @@
    "description": "Please NOTE: Computation is ONLY in SQRFT.",
    "fieldname": "land_acres",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Available Farming Area (In Sqrft)",
    "placeholder": "EXAMPLE: 0.13, 1.45 ...",
    "precision": "2",
-   "reqd": 1
+   "reqd": 1,
+   "width": "1"
   },
   {
    "fieldname": "lft",
@@ -65,7 +69,9 @@
    "depends_on": "eval:!doc.parent_farm",
    "fieldname": "is_group",
    "fieldtype": "Check",
-   "label": "Is Group"
+   "in_list_view": 1,
+   "label": "Is Group",
+   "width": "1"
   },
   {
    "fieldname": "old_parent",
@@ -91,9 +97,11 @@
    "bold": 1,
    "fieldname": "company",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Owned by which Company?",
    "options": "Company",
-   "reqd": 1
+   "reqd": 1,
+   "width": "1"
   },
   {
    "bold": 1,
@@ -105,13 +113,35 @@
    "fieldname": "important_details_of_this_farm_section",
    "fieldtype": "Section Break",
    "label": "Important Details of this Farm"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.land_acres",
+   "description": "Formula Used: 1 Acre ~= 43,560 Sqrft.",
+   "fieldname": "estimate_in_acres",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Estimate in Acres",
+   "read_only": 1,
+   "width": "1"
+  },
+  {
+   "description": "Upto 4 Characters Allowed.",
+   "fieldname": "short_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Farm Short Code",
+   "length": 4,
+   "reqd": 1,
+   "width": "1"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-09-16 13:47:30.159924",
+ "modified": "2025-09-18 05:04:59.907380",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Farm",

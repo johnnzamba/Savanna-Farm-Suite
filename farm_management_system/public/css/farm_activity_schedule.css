@@ -1,0 +1,31 @@
+/* public/css/farm_activity_schedule.css */
+.fa-event-content { overflow: hidden; }
+.fa-event-title { word-wrap: break-word; }
+.fa-event-assignee { color: rgba(0,0,0,0.65); }
+
+/* If you prefer to scope styles to only this calendar, add a parent selector
+   matching the calendar container or a className you add to events. */
+/* Scope to only our events */
+.farm-activity-event .fc-content,
+.farm-activity-event .fc-title,
+.farm-activity-event {
+  /* enlarge and allow wrapping */
+  min-height: 48px !important;
+  padding: 4px 8px !important;
+  white-space: normal !important;
+}
+
+/* title + assignee styles inside the FC structure */
+.farm-activity-event .fa-event-title {
+  display: block;
+  font-weight: 600;
+  line-height: 1.15;
+}
+
+.farm-activity-event .fa-event-assignee {
+  display: block;
+  font-size: 11px;
+  margin-top: 3px;
+  color: rgba(0,0,0,0.7);
+}
+

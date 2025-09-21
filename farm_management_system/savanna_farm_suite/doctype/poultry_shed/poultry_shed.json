@@ -1,11 +1,13 @@
 {
  "actions": [],
  "allow_rename": 1,
+ "autoname": "field:label_poultry_shed",
  "creation": "2025-08-31 17:43:57.229839",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "current_poultry_count"
+  "current_poultry_count",
+  "label_poultry_shed"
  ],
  "fields": [
   {
@@ -15,15 +17,25 @@
    "fieldtype": "Int",
    "label": "Current Poultry Count",
    "read_only": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "label_poultry_shed",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Label Poultry Shed ",
+   "reqd": 1,
+   "unique": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-02 08:09:38.051804",
+ "modified": "2025-09-21 22:59:53.687918",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Poultry Shed",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

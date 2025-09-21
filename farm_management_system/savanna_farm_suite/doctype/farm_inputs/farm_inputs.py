@@ -49,6 +49,6 @@ class FarmInputs(Document):
 			"supplier_items": supplier_items,
 		})
 		item.insert(ignore_permissions=True)
-		frappe.msgprint(_(f"Vaccine '{item.name}' has been created successfully."), alert=True, indicator="green")
+		frappe.msgprint(_(f"Farm Input '{item.name}' has been created successfully."), alert=True, indicator="green")
                   
 

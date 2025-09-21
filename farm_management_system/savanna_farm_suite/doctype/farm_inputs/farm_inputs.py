@@ -10,9 +10,7 @@ class FarmInputs(Document):
 		batch_name = self.vaccine_name
 		if frappe.db.exists("Item", batch_name) or frappe.db.exists("Item", {"item_code": batch_name}):
 			return
-		stock_uom = "Nos" 
-		if self.uom and len(self.uom) > 0:
-			stock_uom = self.uom[0].uom if self.uom[0].uom else "Nos"
+		stock_uom = self.uom if getattr(self, "uom", None) else "Nos"
 
 		# Fetch default company and its abbreviation
 		default_company = frappe.db.get_single_value("Global Defaults", "default_company") or frappe.db.get_default("company")

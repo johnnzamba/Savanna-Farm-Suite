@@ -669,7 +669,7 @@ function saveAllCachedActivities(frm, dialog) {
                 
                 // Show success message
                 frappe.show_alert({
-                    message: __('Farming schedule created successfully with ' + r.message.activities_count + ' activities'),
+                    message: __('Farming schedule created successfully!'),
                     indicator: 'green'
                 });
                 

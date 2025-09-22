@@ -136,89 +136,128 @@ def run_after_insert(docname):
     frappe.db.commit()
     return f"after_insert ran on {docname}"
 
-
 @frappe.whitelist()
 def create_farming_schedule(schedule_data):
-    """
-    Create a new Farm Activity Schedule with multiple activities
-    
-    Args:
-        schedule_data (dict): Dictionary containing schedule information and activities
-    
-    Returns:
-        dict: Success status and created document details
-    """
-    try:
-        # Parse schedule_data if it's a string
-        if isinstance(schedule_data, str):
-            schedule_data = json.loads(schedule_data)
-        
-        # Validate required fields
-        required_fields = [
-            'activity_tied_to_which_crop_batch',
-            'scheduled_activities'
-        ]
-        
-        for field in required_fields:
-            if field not in schedule_data or not schedule_data[field]:
-                frappe.throw(_("Missing required field: {0}").format(field))
-        
-        # Check if a schedule already exists for this crop batch
-        existing_schedule = frappe.db.exists('Farm Activity Schedule', {
-            'activity_tied_to_which_crop_batch': schedule_data['activity_tied_to_which_crop_batch']
-        })
-        
-        if existing_schedule:
-            # Update existing schedule
-            doc = frappe.get_doc('Farm Activity Schedule', existing_schedule)
-        else:
-            # Create new Farm Activity Schedule document
-            doc = frappe.new_doc('Farm Activity Schedule')
-            
-        # Set main fields
-        doc.farming_season = schedule_data.get('farming_season')
-        doc.farm_plot = schedule_data.get('farm_plot')
-        doc.schedule_applicable_for_crop = schedule_data.get('schedule_applicable_for_crop')
-        doc.activity_tied_to_which_crop_batch = schedule_data.get('activity_tied_to_which_crop_batch')
-        doc.schedule_start_date = schedule_data.get('schedule_start_date')
-        doc.scheduled_end_date = schedule_data.get('scheduled_end_date')
-        doc.important_notes = schedule_data.get('important_notes')
-        
-        # Clear existing activities if updating
-        if existing_schedule:
-            doc.scheduled_activity_table = []
-        
-        # Add scheduled activities to the child table
-        activities_count = 0
-        for activity in schedule_data.get('scheduled_activities', []):
-            # Create new row in scheduled_activity_table
-            row = doc.append('scheduled_activity_table', {})
-            row.date_of_planned_activity = activity.get('date_of_planned_activity')
-            row.nature_of_activity = activity.get('nature_of_activity')
-            row.estimated_hours_to_complete = activity.get('estimated_hours_to_complete')
-            row.additional_notes = activity.get('additional_notes')
-            row.assignees = activity.get('assignees')
-            activities_count += 1
-        
-        # Save the document
-        doc.save(ignore_permissions=True)
-        doc.submit()
-        frappe.db.commit()        
-        create_task_assignments(doc)
-        
-        return {
-            'success': True,
-            'name': doc.name,
-            'activities_count': activities_count,
-            'message': _('Farm Activity Schedule created successfully')
-        }
-        
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "Farm Activity Schedule Creation Error")
-        return {
-            'success': False,
-            'error': str(e)
-        }
+	"""
+	Create a new Farm Activity Schedule with multiple activities.
+	If a schedule for the given crop batch already exists, ONLY append new rows to
+	the existing scheduled_activity_table (do not overwrite existing rows).
+	"""
+	try:
+		# Parse schedule_data if it's a string
+		if isinstance(schedule_data, str):
+			schedule_data = json.loads(schedule_data)
+
+		# Validate required fields
+		required_fields = [
+			'activity_tied_to_which_crop_batch',
+			'scheduled_activities'
+		]
+
+		for field in required_fields:
+			if field not in schedule_data or not schedule_data[field]:
+				frappe.throw(_("Missing required field: {0}").format(field))
+
+		batch = schedule_data['activity_tied_to_which_crop_batch']
+
+		# Check if a schedule already exists for this crop batch
+		existing_schedule = frappe.db.exists('Farm Activity Schedule', {
+			'activity_tied_to_which_crop_batch': batch
+		})
+
+		if existing_schedule:
+			# Update existing schedule (do NOT clear existing child table)
+			doc = frappe.get_doc('Farm Activity Schedule', existing_schedule)
+			is_new_doc = False
+		else:
+			# Create new Farm Activity Schedule document
+			doc = frappe.new_doc('Farm Activity Schedule')
+			is_new_doc = True
+
+		# Set/overwrite main fields if provided
+		doc.farming_season = schedule_data.get('farming_season') or doc.get('farming_season')
+		doc.farm_plot = schedule_data.get('farm_plot') or doc.get('farm_plot')
+		doc.schedule_applicable_for_crop = schedule_data.get('schedule_applicable_for_crop') or doc.get('schedule_applicable_for_crop')
+		doc.activity_tied_to_which_crop_batch = batch
+		doc.schedule_start_date = schedule_data.get('schedule_start_date') or doc.get('schedule_start_date')
+		doc.scheduled_end_date = schedule_data.get('scheduled_end_date') or doc.get('scheduled_end_date')
+		doc.important_notes = schedule_data.get('important_notes') or doc.get('important_notes')
+
+		# Build a set of existing activity signatures to avoid duplicates.
+		# Signature uses date + nature + assignees (stringified) as a simple heuristic.
+		existing_signatures = set()
+		for row in getattr(doc, 'scheduled_activity_table', []) or []:
+			sig = (
+				str(getattr(row, 'date_of_planned_activity', '') or '').strip(),
+				str(getattr(row, 'nature_of_activity', '') or '').strip(),
+				str(getattr(row, 'assignees', '') or '').strip()
+			)
+			existing_signatures.add(sig)
+
+		appended_count = 0
+		for activity in schedule_data.get('scheduled_activities', []):
+			date_val = activity.get('date_of_planned_activity') or ''
+			nature = (activity.get('nature_of_activity') or '').strip()
+			assignees = (activity.get('assignees') or '') if activity.get('assignees') is not None else ''
+			sig = (str(date_val).strip(), nature, str(assignees).strip())
+
+			# If this signature already exists, skip appending to avoid duplicates
+			if sig in existing_signatures:
+				continue
+
+			# Append new row
+			row = doc.append('scheduled_activity_table', {})
+			row.date_of_planned_activity = date_val
+			row.nature_of_activity = nature
+			row.estimated_hours_to_complete = activity.get('estimated_hours_to_complete')
+			row.additional_notes = activity.get('additional_notes')
+			row.assignees = assignees
+
+			existing_signatures.add(sig)
+			appended_count += 1
+
+		# Persist changes
+		if is_new_doc:
+			doc.insert(ignore_permissions=True)
+			# Submit newly created schedule if it's in draft
+			try:
+				if doc.docstatus == 0:
+					doc.submit()
+			except Exception:
+				# If submit fails for any reason, still keep the inserted doc
+				frappe.log_error(frappe.get_traceback(), "Farm Activity Schedule Submit Error")
+		else:
+			# For existing document: if it's still draft (docstatus==0) we can save & submit,
+			# otherwise just save appended rows (do not re-submit a submitted doc).
+			doc.save(ignore_permissions=True)
+			try:
+				if doc.docstatus == 0:
+					doc.submit()
+			except Exception:
+				# If submission not allowed, skip but keep the saved changes
+				frappe.log_error(frappe.get_traceback(), "Farm Activity Schedule Submit Error (existing doc)")
+
+		frappe.db.commit()
+
+		# Kick off task assignment for the schedule (pass doc so create_task_assignments can handle doc objects)
+		try:
+			create_task_assignments(doc)
+		except Exception:
+			frappe.log_error(frappe.get_traceback(), "Create Task Assignments Error")
+
+		return {
+			'success': True,
+			'name': doc.name,
+			'activities_appended': appended_count,
+			'message': _('Farm Activity Schedule processed successfully')
+		}
+
+	except Exception as e:
+		frappe.log_error(frappe.get_traceback(), "Farm Activity Schedule Creation Error")
+		return {
+			'success': False,
+			'error': str(e)
+		}
 
 def create_task_assignments(schedule_doc):
     """

@@ -1,0 +1,35 @@
+{
+ "chart_name": "Yield Chart for Cows",
+ "chart_type": "Report",
+ "creation": "2025-09-22 12:06:29.253081",
+ "currency": "",
+ "custom_options": "{\"x_field\": \"cow_nickname\", \"chart_type\": \"Bar\", \"y_axis_fields\": [{\"idx\": 1, \"__islocal\": true, \"y_field\": \"quantity_collected\", \"color\": \"#99e807\", \"name\": \"row 1\"}], \"y_fields\": [\"quantity_collected\"], \"colors\": [\"#99e807\"]}",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "filters_json": "{\"timeline\":\"This Month\"}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 0,
+ "is_standard": 1,
+ "modified": "2025-09-22 12:06:42.654210",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Yield Chart for Cows",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Cow Production Report",
+ "roles": [],
+ "show_values_over_chart": 0,
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "cow_nickname",
+ "y_axis": [
+  {
+   "color": "#99e807",
+   "y_field": "quantity_collected"
+  }
+ ]
+}

@@ -23,6 +23,26 @@
   {
    "chart": "Total Production Value per Animal Product",
    "width": "Half"
+  },
+  {
+   "chart": "Yield Chart for Cows",
+   "width": "Half"
+  },
+  {
+   "chart": "Poultry Analysis Cfart",
+   "width": "Half"
+  },
+  {
+   "chart": "Farm Input Usage",
+   "width": "Half"
+  },
+  {
+   "chart": "Labor Cost Analysis Chart",
+   "width": "Half"
+  },
+  {
+   "chart": "Total Expense Per Crop",
+   "width": "Half"
   }
  ],
  "creation": "2025-09-09 12:50:03.837584",
@@ -32,7 +52,7 @@
  "idx": 0,
  "is_default": 1,
  "is_standard": 1,
- "modified": "2025-09-10 12:31:49.347905",
+ "modified": "2025-09-22 17:28:34.366172",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Farm Management System",

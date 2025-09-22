@@ -75,7 +75,7 @@ fixtures = [
     },
     {
         "dt": "Client Script",
-        "filters": [["name", "in", ["Poultry Batch", "Calendar HTML", "Render Chart", "Process Farming Activity"]]]
+        "filters": [["name", "in", ["Poultry Batch", "Calendar HTML", "Render Chart", "Process Farming Activity", "Cull Poultry", "Collections for Poultry Batch"]]]
 
     },
     {

@@ -815,3 +815,63 @@ def get_weekly_stock_value_data(batch_name):
         'datasets': [{'name': product, 'values': values} for product, values in datasets.items()]
     }
 
+
+import frappe
+from frappe.utils import flt
+
+@frappe.whitelist()
+def cull_poultry_batch(batch_name, cull_count):
+    """
+    Safely add cull_count (int) to Poultry Batch.mortality_count,
+    recalc mortality_rate = (mortality_count / total_animals) * 100,
+    then commit.
+    Returns dict with success flag or error.
+    """
+    try:
+        # ensure int
+        cull_count = int(float(cull_count))
+    except Exception:
+        return {"success": False, "error": "Invalid cull_count; must be a whole number."}
+
+    if cull_count <= 0:
+        return {"success": False, "error": "Cull count must be a positive integer."}
+
+    # fetch doc
+    try:
+        doc = frappe.get_doc('Poultry Batches', batch_name)
+    except frappe.DoesNotExistError:
+        return {"success": False, "error": f"Poultry Batches '{batch_name}' not found."}
+
+    # permission check
+    try:
+        doc.check_permission('write')
+    except Exception:
+        return {"success": False, "error": "You do not have permission to modify this batch."}
+
+    total = flt(doc.get('total_animals') or 0)
+    if total <= 0:
+        return {"success": False, "error": "Batch has no total_animals set or total_animals is zero."}
+
+    current_mortality = int(flt(doc.get('mortality_count') or 0))
+    new_mortality = current_mortality + cull_count
+
+    if new_mortality > total:
+        return {"success": False, "error": "Cull count would exceed total animals in the batch."}
+
+    # atomic update using db_set then commit
+    try:
+        # store integer mortality_count
+        frappe.db.set_value('Poultry Batches', batch_name, 'mortality_count', new_mortality, update_modified=True)
+        mortality_rate = (new_mortality / total) * 100
+        frappe.db.set_value('Poultry Batches', batch_name, 'mortality_rate', flt(mortality_rate, 6), update_modified=True)
+
+        frappe.db.commit()
+    except Exception as e:
+        frappe.db.rollback()
+        return {"success": False, "error": f"Failed to update batch: {str(e)}"}
+
+    return {
+        "success": True,
+        "mortality_count": new_mortality,
+        "mortality_rate": mortality_rate
+    }

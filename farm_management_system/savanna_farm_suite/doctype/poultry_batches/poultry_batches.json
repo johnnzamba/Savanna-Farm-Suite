@@ -104,7 +104,8 @@
    "label": "Total Number of Animals Received",
    "non_negative": 1,
    "placeholder": "100",
-   "reqd": 1
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "default": "0",
@@ -325,7 +326,7 @@
    "link_fieldname": "poultry_batch"
   }
  ],
- "modified": "2025-09-04 13:00:38.301791",
+ "modified": "2025-09-22 10:20:08.317403",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Poultry Batches",

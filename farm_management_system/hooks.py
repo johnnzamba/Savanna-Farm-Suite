@@ -134,7 +134,7 @@ calendars = ["Farm Activity Schedule"]
 # ----------
 
 # application home page (will override Website Settings)
-home_page = "farm-management-system"
+# home_page = "farm-management-system"
 
 # website user home page (by Role)
 # role_home_page = {

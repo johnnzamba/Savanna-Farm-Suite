@@ -891,3 +891,326 @@ def get_scheduled_activities(schedule_names):
                 })
     
     return activities
+
+
+import frappe
+import json
+from frappe import _
+from frappe.utils import flt, nowdate, nowtime
+from erpnext.accounts.utils import get_fiscal_year
+
+@frappe.whitelist()
+def record_harvest_entry(crop_batch, harvesting_date, crop, rows):
+    """
+    Record harvest entry and update related documents
+    """
+    if not crop_batch:
+        frappe.throw(_("Crop batch is required"), frappe.ValidationError)
+
+    # Parse rows if needed
+    if isinstance(rows, str):
+        try:
+            rows = json.loads(rows)
+        except Exception:
+            rows = frappe.parse_json(rows)
+
+    if not rows or len(rows) == 0:
+        frappe.throw(_("No harvest rows provided"), frappe.ValidationError)
+
+    try:
+        # Load the Crop Intake document
+        crop_intake = frappe.get_doc("Crop Intake", crop_batch)
+        if not crop_intake:
+            frappe.throw(_("Crop Intake {0} not found").format(crop_batch))
+
+        # Append rows to table_yuhl in Crop Intake
+        for row in rows:
+            crop_intake.append("table_yuhl", {
+                "date_of_collection": harvesting_date or nowdate(),
+                "product_collected": row.get("crop_product"),
+                "products_default_uom": row.get("default_uom"),
+                "quantity_collected": flt(row.get("quantity_harvested") or 0.0)
+            })
+
+        # Save Crop Intake
+        crop_intake.save(ignore_permissions=True)
+
+        # Update Farming Season if exists
+        if crop_intake.get("farming_season"):
+            update_farming_season(crop_intake.farming_season, harvesting_date, rows)
+
+        # Update Farm Plots if exists
+        if crop_intake.get("plot_on_which_planting_is_done"):
+            update_farm_plots(crop_intake.plot_on_which_planting_is_done, harvesting_date, rows)
+
+        # Create Stock Ledger Entries
+        sle_results = []
+        for row in rows:
+            try:
+                sle = create_stock_ledger_entry_for_harvest(
+                    row.get("crop_product"), 
+                    flt(row.get("quantity_harvested") or 0.0), 
+                    "Crop Intake", 
+                    crop_batch
+                )
+                sle_results.append(sle)
+            except Exception as e:
+                frappe.log_error(f"Stock Ledger Entry failed for {row.get('crop_product')}: {e}", "record_harvest_entry")
+
+        frappe.db.commit()
+        return {"success": True, "sle_results": sle_results}
+
+    except Exception as e:
+        frappe.db.rollback()
+        frappe.log_error(frappe.get_traceback(), "Record Harvest Error")
+        frappe.throw(_("Failed to record harvest: {0}").format(str(e)))
+
+def update_farming_season(farming_season_name, harvesting_date, rows):
+    """Update Farming Season document"""
+    try:
+        farming_season = frappe.get_doc("Farming Season", farming_season_name)
+        for row in rows:
+            farming_season.append("table_krps", {
+                "date_of_collection": harvesting_date,
+                "product_collected": row.get("crop_product"),
+                "products_default_uom": row.get("default_uom"),
+                "quantity_collected": flt(row.get("quantity_harvested") or 0.0)
+            })
+        farming_season.save(ignore_permissions=True)
+    except Exception as e:
+        frappe.log_error(f"Failed to update Farming Season {farming_season_name}: {e}")
+
+def update_farm_plots(plot_name, harvesting_date, rows):
+    """Update Farm Plots document"""
+    try:
+        farm_plot = frappe.get_doc("Farm Plots", plot_name)
+        for row in rows:
+            farm_plot.append("harvest_history", {
+                "date_of_collection": harvesting_date,
+                "product_collected": row.get("crop_product"),
+                "products_default_uom": row.get("default_uom"),
+                "quantity_collected": flt(row.get("quantity_harvested") or 0.0)
+            })
+        farm_plot.save(ignore_permissions=True)
+    except Exception as e:
+        frappe.log_error(f"Failed to update Farm Plot {plot_name}: {e}")
+
+import frappe
+from frappe.utils import flt, nowdate, nowtime
+
+def _get_selling_rate(item_code):
+    """
+    Fetch the price_list_rate from Item Price where selling=1, ordered by valid_from desc.
+    """
+    item_prices = frappe.get_all(
+        "Item Price",
+        filters={"item_code": item_code, "selling": 1},
+        fields=["price_list_rate"],
+        order_by="valid_from desc, modified desc",
+        limit=1
+    )
+    if item_prices:
+        return flt(item_prices[0].price_list_rate)
+    return 0.0
+
+def create_stock_ledger_entry_for_harvest(crop_product, quantity_harvested, reference_doctype, reference_name):
+    """
+    Create Stock Ledger Entry for crop products (adapted from poultry example)
+    """
+    if not crop_product:
+        frappe.throw(_("Crop product is required"), frappe.ValidationError)
+
+    quantity_harvested = flt(quantity_harvested or 0.0)
+    if quantity_harvested == 0:
+        frappe.throw(_("Quantity harvested must be non-zero"), frappe.ValidationError)
+
+    # Resolve Item from crop product
+    item_code, item_name, item_doc = _resolve_item_from_crop_product(crop_product)
+    
+    # Determine warehouse
+    warehouse = _get_default_warehouse_for_item(item_name, item_doc)
+
+    # Get selling rate from Item Price
+    selling_rate = _get_selling_rate(item_code)
+
+    # Get latest SLE for qty, incoming_rate, fiscal_year, company
+    latest_sle = _get_latest_sle(item_code, warehouse)
+    
+    if latest_sle:
+        latest_qty_after = flt(latest_sle.get("qty_after_transaction") or 0.0)
+        incoming_rate = flt(latest_sle.get("incoming_rate") or 0.0)
+        fiscal_year = latest_sle.get("fiscal_year")
+        company = latest_sle.get("company")
+    else:
+        # No previous SLE - use defaults
+        latest_qty_after = 0.0
+        incoming_rate = flt(item_doc.get("valuation_rate") or item_doc.get("standard_rate") or 0.0)
+        
+        try:
+            fy = get_fiscal_year(nowdate())
+            fiscal_year = fy[0] if fy else None
+        except Exception:
+            fiscal_year = None
+            
+        company = _determine_target_company(item_doc)
+
+    # Use selling_rate for outgoing_rate and valuation_rate
+    outgoing_rate = selling_rate
+    valuation_rate = selling_rate
+
+    # If selling_rate is 0, fallback to original logic for valuation_rate
+    if valuation_rate == 0:
+        if latest_sle:
+            valuation_rate = flt(latest_sle.get("valuation_rate") or 0.0)
+        else:
+            valuation_rate = incoming_rate
+        outgoing_rate = 0.0
+
+    # Calculate new values
+    actual_qty = flt(quantity_harvested)
+    new_qty_after = flt(latest_qty_after + actual_qty)
+    stock_value = flt(valuation_rate * new_qty_after)
+    stock_value_difference = flt(valuation_rate * actual_qty)
+    stock_queue_str = frappe.as_json([[new_qty_after, valuation_rate]])
+
+    # Create SLE
+    sle_doc = frappe.get_doc({
+        "doctype": "Stock Ledger Entry",
+        "item_code": item_code,
+        "warehouse": warehouse,
+        "posting_date": nowdate(),
+        "posting_time": nowtime(),
+        "voucher_type": reference_doctype,
+        "voucher_no": reference_name,
+        "actual_qty": actual_qty,
+        "qty_after_transaction": new_qty_after,
+        "incoming_rate": incoming_rate,
+        "outgoing_rate": outgoing_rate,
+        "valuation_rate": valuation_rate,
+        "fiscal_year": fiscal_year,
+        "company": company,
+        "stock_value": stock_value,
+        "stock_value_difference": stock_value_difference,
+        "stock_queue": stock_queue_str
+    })
+
+    sle_doc.insert(ignore_permissions=True)
+    
+    try:
+        sle_doc.submit()
+        return {"sle_name": sle_doc.name, "submitted": True}
+    except Exception:
+        frappe.log_error(frappe.get_traceback(), "create_stock_ledger_entry_for_harvest: submit failed")
+        return {"sle_name": sle_doc.name, "submitted": False}
+
+# Helper functions (similar to poultry example but for crops)
+def _resolve_item_from_crop_product(crop_product_name):
+    """Resolve Item from crop product name"""
+    if not crop_product_name:
+        frappe.throw(_("Crop product is required"), frappe.ValidationError)
+
+    # Try matching item_code first
+    items = frappe.get_all("Item", 
+        filters={"item_code": crop_product_name},
+        fields=["name", "item_code"], 
+        limit_page_length=1
+    )
+    
+    if not items:
+        # Fallback to Item name
+        items = frappe.get_all("Item", 
+            filters={"name": crop_product_name},
+            fields=["name", "item_code"], 
+            limit_page_length=1
+        )
+
+    if not items:
+        frappe.throw(_("No Item found for crop product '{0}'").format(crop_product_name))
+
+    item_name = items[0]["name"]
+    item_code_value = items[0].get("item_code") or item_name
+    item_doc = frappe.get_doc("Item", item_name)
+    
+    return item_code_value, item_name, item_doc
+
+def _determine_target_company(item_doc=None):
+    """Determine target company"""
+    company = frappe.defaults.get_global_default("company") or frappe.db.get_default("company")
+    if not company and item_doc:
+        company = item_doc.get("company")
+    return company
+
+def _get_default_warehouse_for_item(item_name, item_doc=None):
+    """Get default warehouse for item"""
+    if not item_name:
+        return None
+
+    if item_doc is None:
+        try:
+            item_doc = frappe.get_doc("Item", item_name)
+        except Exception:
+            item_doc = None
+
+    target_company = _determine_target_company(item_doc)
+
+    # Check item defaults
+    item_defaults = frappe.get_all(
+        "Item Default",
+        filters={"parent": item_name},
+        fields=["company", "default_warehouse"],
+        order_by="idx asc"
+    )
+    
+    if item_defaults and target_company:
+        for row in item_defaults:
+            row_company = row.get("company")
+            row_wh = row.get("default_warehouse")
+            if row_wh and (not row_company or row_company == target_company):
+                if frappe.db.exists("Warehouse", row_wh):
+                    w_company = frappe.get_value("Warehouse", row_wh, "company")
+                    if not w_company or w_company == target_company:
+                        return row_wh
+
+    # Try company-based warehouse
+    if target_company:
+        abbr = frappe.get_value("Company", target_company, "abbr")
+        if abbr:
+            warehouse_name = f"Stores - {abbr}"
+            if frappe.db.exists("Warehouse", warehouse_name):
+                w_company = frappe.get_value("Warehouse", warehouse_name, "company")
+                if not w_company or w_company == target_company:
+                    return warehouse_name
+
+    # Global default
+    global_wh = frappe.defaults.get_global_default("warehouse") or frappe.db.get_default("warehouse")
+    if global_wh and frappe.db.exists("Warehouse", global_wh):
+        w_company = frappe.get_value("Warehouse", global_wh, "company")
+        if not w_company or (target_company and w_company == target_company):
+            return global_wh
+
+    # First warehouse for company
+    if target_company:
+        whs = frappe.get_all("Warehouse", 
+            filters={"company": target_company}, 
+            fields=["name"], 
+            limit_page_length=1
+        )
+        if whs:
+            return whs[0].name
+
+    frappe.throw(_("Could not determine warehouse for Item {0}").format(item_name))
+
+def _get_latest_sle(item_code, warehouse):
+    """Get latest Stock Ledger Entry for item/warehouse"""
+    sle_rows = frappe.get_all(
+        "Stock Ledger Entry",
+        filters={"item_code": item_code, "warehouse": warehouse},
+        fields=[
+            "name", "qty_after_transaction", "incoming_rate", "outgoing_rate",
+            "valuation_rate", "fiscal_year", "company", "posting_datetime", "creation"
+        ],
+        order_by="posting_datetime desc, creation desc",
+        limit_page_length=1
+    )
+    
+    return sle_rows[0] if sle_rows else None

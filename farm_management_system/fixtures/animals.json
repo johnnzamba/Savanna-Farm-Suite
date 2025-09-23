@@ -19,22 +19,6 @@
   "amended_from": null,
   "animal_categories": [
    {
-    "animal_category": "Dairy Cow",
-    "parent": "Cattle",
-    "parentfield": "animal_categories",
-    "parenttype": "Animals"
-   }
-  ],
-  "animal_name": "Cattle",
-  "docstatus": 0,
-  "doctype": "Animals",
-  "modified": "2025-09-01 12:08:02.417020",
-  "name": "Cattle"
- },
- {
-  "amended_from": null,
-  "animal_categories": [
-   {
     "animal_category": "Broilers",
     "parent": "Chicken",
     "parentfield": "animal_categories",
@@ -58,5 +42,21 @@
   "doctype": "Animals",
   "modified": "2025-09-01 10:48:26.887610",
   "name": "Chicken"
+ },
+ {
+  "amended_from": null,
+  "animal_categories": [
+   {
+    "animal_category": "Dairy Cow",
+    "parent": "Cattle",
+    "parentfield": "animal_categories",
+    "parenttype": "Animals"
+   }
+  ],
+  "animal_name": "Cattle",
+  "docstatus": 0,
+  "doctype": "Animals",
+  "modified": "2025-09-01 12:08:02.417020",
+  "name": "Cattle"
  }
 ]

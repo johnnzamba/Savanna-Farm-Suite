@@ -26,13 +26,15 @@ add_to_apps_screen = [
 # include js, css files in header of desk.html
 app_include_css = [
     "/assets/farm_management_system/css/banners.css",
-    "/assets/farm_management_system/css//farm_activity_schedule.css"
+    "/assets/farm_management_system/css//farm_activity_schedule.css",
+    # "/assets/farm_management_system/js/farm_activity_calend.css"
 ]
 app_include_js = [ 
     "/assets/farm_management_system/js/banners.js", 
-    "/assets/farm_management_system/js/poultry_batches_listview.js",
+    # "/assets/farm_management_system/js/poultry_batches_listview.js",
     "/assets/farm_management_system/js/cattle_listview.js",
-    "/assets/farm_management_system/js/farm_activity_schedule_calendar.js"
+    "/assets/farm_management_system/js/farm_activity_schedule_calendar.js",
+    # "/assets/farm_management_system/js/farm_activity_calend.js"
     # "/assets/farm_management_system/js/farm_activity_gantt.js"
 ]
 
@@ -75,12 +77,16 @@ fixtures = [
     },
     {
         "dt": "Client Script",
-        "filters": [["name", "in", ["Poultry Batch", "Calendar HTML", "Render Chart", "Process Farming Activity", "Cull Poultry", "Collections for Poultry Batch"]]]
+        "filters": [["name", "in", ["Poultry Batch", "Calendar HTML", "Render Chart", "Process Farming Activity", "Cull Poultry", "Collections for Poultry Batch", "Record Harvest", "Collection - Poultry Form", "Collection - Cattle List"]]]
 
     },
     {
         "dt": "Email Template",
         "filters": [["name", "in", ["Doctor's Notification"]]]
+    },
+    {
+        "dt": "Page",
+        "filters": [["name", "in", ["farm-activity-calend"]]]
     },
     {
         "dt": "Animals"
@@ -116,16 +122,19 @@ calendars = ["Farm Activity Schedule"]
 #     "farm_management_system/public/pig.svg",
 #     "farm_management_system/public/livestock.svg",
 #     "farm_management_system/public/plants.svg",
-#     "farm_management_system/public/poultry.svg"
+#     "farm_management_system/public/poultry.svg",
+#     "farm_management_system/public/cattle.svg",
+#     "farm_management_system/public/sheep.svg",
+#     "farm_management_system/public/sunflower.svg",
+#     "farm_management_system/public/vegetable.svg",
 # ]
-
 
 
 # Home Pages
 # ----------
 
 # application home page (will override Website Settings)
-# home_page = "login"
+home_page = "farm-management-system"
 
 # website user home page (by Role)
 # role_home_page = {
@@ -140,7 +149,12 @@ calendars = ["Farm Activity Schedule"]
 
 # Jinja
 # ----------
-
+jinja = {
+    "methods": [
+        "farm_management_system.savanna_farm_suite.page.farm_activity_calend.farm_calendar.get_random_farm_splash_icon",
+        "farm_management_system.savanna_farm_suite.page.farm_activity_calend.farm_calendar.get_farm_splash_image"
+    ]
+}
 # add methods and filters to jinja environment
 # jinja = {
 # 	"methods": "farm_management_system.utils.jinja_methods",

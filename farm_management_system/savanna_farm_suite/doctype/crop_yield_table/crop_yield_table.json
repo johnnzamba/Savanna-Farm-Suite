@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-09-04 11:26:27.729070",
+ "creation": "2025-09-23 04:02:07.795978",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -25,17 +25,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Product Collected",
-   "options": "Animal Products",
-   "width": "2"
-  },
-  {
-   "bold": 1,
-   "fieldname": "quantity_collected",
-   "fieldtype": "Float",
-   "in_list_view": 1,
-   "label": "Quantity Collected",
-   "non_negative": 1,
-   "precision": "1",
+   "options": "Crop Products",
    "width": "2"
   },
   {
@@ -48,16 +38,26 @@
    "label": "Product's Default UOM",
    "options": "UOM",
    "width": "2"
+  },
+  {
+   "bold": 1,
+   "fieldname": "quantity_collected",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Quantity Collected",
+   "non_negative": 1,
+   "precision": "1",
+   "width": "2"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-09-23 04:01:46.979331",
+ "modified": "2025-09-23 04:02:31.416322",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
- "name": "Poultry Collections Table",
+ "name": "Crop Yield Table",
  "owner": "Administrator",
  "permissions": [],
  "row_format": "Dynamic",

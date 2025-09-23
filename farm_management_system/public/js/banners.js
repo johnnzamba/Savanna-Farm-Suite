@@ -3,7 +3,12 @@
     "poultry.svg",
     "livestock.svg", 
     "pig.svg",
-    "plants.svg"
+    "plants.svg",
+    "carrot.svg",
+    "sheep.svg",
+    "sunflower.svg",
+    "vegetable.svg",
+    "farm.svg"
   ];
 
   function chooseRandom() {

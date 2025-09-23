@@ -15,7 +15,9 @@
   "important_notes_about_the_season",
   "season_status",
   "list_of_crops_plannedassigned_to_plots_in_this_season_section",
-  "table_xtod"
+  "table_xtod",
+  "harvest_history_section",
+  "table_krps"
  ],
  "fields": [
   {
@@ -94,13 +96,27 @@
    "fieldtype": "Table",
    "options": "Farm Plot History Table",
    "read_only": 1
+  },
+  {
+   "fieldname": "harvest_history_section",
+   "fieldtype": "Section Break",
+   "label": "Harvest History"
+  },
+  {
+   "allow_on_submit": 1,
+   "bold": 1,
+   "description": "AUTOPOPULATED",
+   "fieldname": "table_krps",
+   "fieldtype": "Table",
+   "options": "Crop Yield Table",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-21 00:08:36.239458",
+ "modified": "2025-09-23 04:29:23.281229",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Farming Season",

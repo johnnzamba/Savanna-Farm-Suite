@@ -42,18 +42,21 @@ def execute(filters=None):
     crop_filter = (filters.get("crop") or "").strip() or None
     start_date, end_date = get_date_range_for_timeline(timeline)
 
-    # Columns: Crop | Crop Intake | Total Farm Input Expense | Total Labor Cost Expense
+    # Columns: Crop | Crop Intake | Total Farm Input Expense | Total Labor Cost Expense | Total Yield Value | ROI
     columns = [
         {"label": "Crop", "fieldname": "crop", "fieldtype": "Data", "width": 180},
         {"label": "Crop Intake", "fieldname": "crop_intake", "fieldtype": "Link", "options": "Crop Intake", "width": 220},
         {"label": "Total Farm Input Expense", "fieldname": "total_farm_input_expense", "fieldtype": "Currency", "width": 180},
         {"label": "Total Labor Cost Expense", "fieldname": "total_labor_cost_expense", "fieldtype": "Currency", "width": 180},
+        {"label": "Total Yield Value", "fieldname": "total_yield_value", "fieldtype": "Currency", "width": 180},
+        {"label": "ROI", "fieldname": "roi", "fieldtype": "Percent", "width": 120},
     ]
 
     data = []
     # totals aggregated per crop for chart
     totals_per_crop_inputs = defaultdict(float)
     totals_per_crop_labor = defaultdict(float)
+    totals_per_crop_yield = defaultdict(float)
 
     # cache valuation_rate per item_code to avoid repeated server calls
     valuation_rate_cache = {}
@@ -152,54 +155,77 @@ def execute(filters=None):
                     vr = get_valuation_rate(item)
                     total_input_expense_for_intake += (qty * vr)
 
+            # Compute yield value for this intake within the timeline
+            intake_doc = frappe.get_doc("Crop Intake", intake_name)
+            harvests = [h for h in (intake_doc.table_yuhl or []) if start_date <= getdate(h.date_of_collection) <= end_date]
+            product_yields = defaultdict(float)
+            for h in harvests:
+                product_yields[h.product_collected] += flt(h.quantity_collected or 0.0)
+            yield_value = 0.0
+            for prod, sum_qty in product_yields.items():
+                vr = get_valuation_rate(prod)
+                yield_value += sum_qty * vr
+
+            # Compute ROI for this intake
+            total_expense_for_intake = total_input_expense_for_intake + total_labor_expense_for_intake
+            roi = ((yield_value - total_expense_for_intake) / total_expense_for_intake * 100) if total_expense_for_intake > 0 else 0.0
+
             # append row for this intake
             data.append([
                 crop_name,
                 intake_name,
                 total_input_expense_for_intake,
-                total_labor_expense_for_intake
+                total_labor_expense_for_intake,
+                yield_value,
+                roi
             ])
 
             # aggregate per crop totals for chart and summary
             totals_per_crop_inputs[crop_name] += total_input_expense_for_intake
             totals_per_crop_labor[crop_name] += total_labor_expense_for_intake
+            totals_per_crop_yield[crop_name] += yield_value
 
-    # Build chart: x-axis = Crop, y-axis has two datasets (input expense and labor expense)
+    # Build chart
     input_color = "#f48fb1"   # pink-ish for Total Farm Input Expense
     labor_color = "#2196f3"   # blue for Total Labor Cost Expense
+    yield_color = "#4caf50"   # green for Total Yield Value
     neutral_color = "#333"    # text color
 
-    # Build chart: x-axis = Crop, y-axis has two datasets (input expense and labor expense)
-    chart = None
-    labels = sorted(totals_per_crop_inputs.keys()) if totals_per_crop_inputs else []
-    input_values = [totals_per_crop_inputs[k] for k in labels]
+    labels = sorted(set(list(totals_per_crop_inputs.keys()) + list(totals_per_crop_labor.keys()) + list(totals_per_crop_yield.keys())))
+    input_values = [totals_per_crop_inputs.get(k, 0.0) for k in labels]
     labor_values = [totals_per_crop_labor.get(k, 0.0) for k in labels]
+    yield_values = [totals_per_crop_yield.get(k, 0.0) for k in labels]
 
+    # Chart: bar chart with inputs, labor, yield
+    chart = None
     if labels:
         chart = {
-            "title": _("ROI per Crop (Inputs vs Labor)"),
+            "title": _("ROI per Crop (Inputs, Labor, Yield)"),
             "data": {
                 "labels": labels,
                 "datasets": [
                     {"name": _("Total Farm Input Expense"), "values": input_values, "chartType": "bar"},
-                    {"name": _("Total Labor Cost Expense"), "values": labor_values, "chartType": "bar"}
+                    {"name": _("Total Labor Cost Expense"), "values": labor_values, "chartType": "bar"},
+                    {"name": _("Total Yield Value"), "values": yield_values, "chartType": "bar"}
                 ]
             },
             "type": "bar",
             "height": 320,
-            # matching colors so legend and message align visually
-            "colors": [input_color, labor_color]
+            "colors": [input_color, labor_color, yield_color]
         }
 
     # Build message (HTML) — a bigger bold informative header plus a coloured summary per crop.
     total_inputs_all = sum(totals_per_crop_inputs.values()) if totals_per_crop_inputs else 0.0
     total_labor_all = sum(totals_per_crop_labor.values()) if totals_per_crop_labor else 0.0
+    total_yield_all = sum(totals_per_crop_yield.values()) if totals_per_crop_yield else 0.0
+    total_cost_all = total_inputs_all + total_labor_all
+    total_roi = ((total_yield_all - total_cost_all) / total_cost_all * 100) if total_cost_all > 0 else 0.0
 
     # Header: big, bold and informative
     header_html = (
         f"<div style='font-size:15px;font-weight:700;color:{neutral_color};"
         f"margin-bottom:8px;'>"
-        f"ROI per Crop — Inputs vs Labor"
+        f"ROI per Crop — Inputs, Labor, Yield & ROI"
         f"</div>"
     )
 
@@ -208,19 +234,25 @@ def execute(filters=None):
         f"<div style='font-size:13px;color:{neutral_color};margin-bottom:10px;'>"
         f"<strong>Timeline:</strong> {timeline} &nbsp; | &nbsp;"
         f"<strong>Total Inputs:</strong> {total_inputs_all:,.2f} &nbsp; | &nbsp;"
-        f"<strong>Total Labor:</strong> {total_labor_all:,.2f}"
+        f"<strong>Total Labor:</strong> {total_labor_all:,.2f} &nbsp; | &nbsp;"
+        f"<strong>Total Yield:</strong> {total_yield_all:,.2f} &nbsp; | &nbsp;"
+        f"<strong>Total ROI:</strong> {total_roi:0.1f}%"
         f"</div>"
     )
 
     # Per-crop lines: swatch, crop name (bold) and colored bold amounts
     message_lines = []
-    for crop_name in sorted(set(list(totals_per_crop_inputs.keys()) + list(totals_per_crop_labor.keys()))):
+    for crop_name in labels:
         inp = totals_per_crop_inputs.get(crop_name, 0.0)
         lab = totals_per_crop_labor.get(crop_name, 0.0)
+        yld = totals_per_crop_yield.get(crop_name, 0.0)
+        cost = inp + lab
+        roi = ((yld - cost) / cost * 100) if cost > 0 else 0.0
 
         # percentage shares (guard against zero totals)
         inp_pct = (inp / total_inputs_all * 100) if total_inputs_all else 0.0
         lab_pct = (lab / total_labor_all * 100) if total_labor_all else 0.0
+        yld_pct = (yld / total_yield_all * 100) if total_yield_all else 0.0
 
         line = (
             f"<div style='font-size:13px;margin-bottom:6px;display:flex;align-items:center;'>"
@@ -239,6 +271,17 @@ def execute(filters=None):
             f"margin-right:8px;border-radius:2px;'></span>"
             f"<span style='font-weight:700;color:{labor_color};margin-right:8px;'>{lab:,.2f}</span>"
             f"<small style='color:#666;'>{lab_pct:0.1f}%</small>"
+            f"</div>"
+            # yield swatch + value + pct
+            f"<div style='flex:0 0 240px;display:flex;align-items:center;'>"
+            f"<span style='display:inline-block;width:12px;height:12px;background:{yield_color};"
+            f"margin-right:8px;border-radius:2px;'></span>"
+            f"<span style='font-weight:700;color:{yield_color};margin-right:8px;'>{yld:,.2f}</span>"
+            f"<small style='color:#666;'>{yld_pct:0.1f}%</small>"
+            f"</div>"
+            # ROI value
+            f"<div style='flex:0 0 180px;display:flex;align-items:center;'>"
+            f"<span style='font-weight:700;color:yellow;'>{roi:0.1f}%</span>"
             f"</div>"
             "</div>"
         )

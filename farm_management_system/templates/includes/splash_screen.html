@@ -1,5 +1,39 @@
 <div class="centered splash">
-	<img src="{{ get_farm_splash_image() if get_farm_splash_image else '/assets/farm_management_system/poultry.svg' }}"
-		style="max-width: 100px; max-height: 100px;"
+	<!-- 1. Image size increased from 100px to 150px -->
+	<img src="{{ get_farm_splash_image() or get_random_farm_splash_icon() }}"
+		style="max-width: 150px; max-height: 150px;"
 		class="splash-logo">
 </div>
+
+<!-- 2. Custom CSS to add a 3-second delay before the splash screen fades out -->
+<style>
+    /*
+     * When the Desk is ready, Frappe adds the class "page-state-read" to the body.
+     * We use this to trigger a fade-out animation with a delay.
+    */
+    .page-state-read .splash {
+        /* Animation: name duration delay fill-mode */
+        animation: fade-out 0.5s 3s forwards;
+        -webkit-animation: fade-out 0.5s 3s forwards;
+    }
+
+    @keyframes fade-out {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+            visibility: hidden; /* Hide element after animation completes */
+        }
+    }
+
+    @-webkit-keyframes fade-out {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
+</style>

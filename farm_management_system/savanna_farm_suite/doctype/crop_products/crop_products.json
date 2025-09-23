@@ -8,6 +8,7 @@
  "field_order": [
   "product_name",
   "crop",
+  "add_selling_price",
   "default_uom",
   "additional_notes",
   "stock_level_trends"
@@ -48,12 +49,18 @@
    "fieldname": "stock_level_trends",
    "fieldtype": "HTML",
    "label": "Stock Level Trends"
+  },
+  {
+   "fieldname": "add_selling_price",
+   "fieldtype": "Currency",
+   "label": "Add Selling Price",
+   "non_negative": 1
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-09-18 16:12:04.774487",
+ "modified": "2025-09-23 05:28:08.535595",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Crop Products",

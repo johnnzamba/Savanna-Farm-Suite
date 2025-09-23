@@ -10,7 +10,21 @@ frappe.ui.form.on("Crop", {
             generate_and_set_shortcode(frm);
         }
     },
-
+    onload: function(frm) {
+        let intro = '', color = '';
+        const state = (frm.doc.workflow_state || '').toLowerCase();
+    
+        if (!frm.is_new()) {
+          intro = `
+            <strong>
+              🎯 Please confirm accurate valuation rates for Products and Seedlings.<br>
+              ✨ <i>Tip: Correct rates ensure precise accounting and reliable reports.</i>
+            </strong>`;
+          color = 'red';
+    
+        } 
+        frm.set_intro(intro, color);
+    },
     before_save(frm) {
         // ensure the "was new" flag is set even if refresh wasn't triggered
         if (typeof frm.__was_new === "undefined") {

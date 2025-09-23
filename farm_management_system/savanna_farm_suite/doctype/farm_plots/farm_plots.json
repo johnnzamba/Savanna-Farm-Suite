@@ -14,6 +14,7 @@
   "current_status",
   "list_of_crops_assigned_to_plots_in_this_season_section",
   "plot_history",
+  "harvest_history",
   "lft",
   "rgt",
   "is_group",
@@ -136,6 +137,15 @@
    "ignore_user_permissions": 1,
    "label": "Parent Farm Plots",
    "options": "Farm Plots"
+  },
+  {
+   "bold": 1,
+   "description": "AUTOPOPULATES",
+   "fieldname": "harvest_history",
+   "fieldtype": "Table",
+   "label": "Harvest History",
+   "options": "Crop Yield Table",
+   "read_only": 1
   }
  ],
  "grid_page_length": 50,
@@ -147,7 +157,7 @@
    "link_fieldname": "plot_on_which_planting_is_done"
   }
  ],
- "modified": "2025-09-21 00:23:08.419270",
+ "modified": "2025-09-23 04:32:05.565662",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Farm Plots",

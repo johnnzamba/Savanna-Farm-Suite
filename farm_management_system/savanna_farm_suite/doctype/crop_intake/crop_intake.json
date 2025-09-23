@@ -25,7 +25,10 @@
   "schedule_calendar",
   "farm_inputs_log_section",
   "table_voqq",
-  "farm_input_usage_trend"
+  "farm_input_usage_trend",
+  "farm_harvest_log_section",
+  "table_yuhl",
+  "harvest_trend"
  ],
  "fields": [
   {
@@ -178,6 +181,24 @@
    "fieldtype": "Date",
    "label": "Season Ends on  Date",
    "read_only": 1
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "farm_harvest_log_section",
+   "fieldtype": "Section Break",
+   "label": "Farm Harvest Log"
+  },
+  {
+   "bold": 1,
+   "fieldname": "table_yuhl",
+   "fieldtype": "Table",
+   "options": "Crop Yield Table",
+   "read_only": 1
+  },
+  {
+   "fieldname": "harvest_trend",
+   "fieldtype": "HTML",
+   "label": "Harvest Trend"
   }
  ],
  "grid_page_length": 50,
@@ -192,7 +213,7 @@
    "link_fieldname": "farming_activity_tied_to_which_crop_batch"
   }
  ],
- "modified": "2025-09-20 23:15:14.605316",
+ "modified": "2025-09-23 04:19:42.297461",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Crop Intake",
@@ -201,7 +222,6 @@
  "permissions": [
   {
    "create": 1,
-   "delete": 1,
    "email": 1,
    "export": 1,
    "print": 1,

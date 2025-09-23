@@ -235,72 +235,113 @@ def get_animal_feed_uoms(feeds, fed_on=None):
 
     return result
 
-
-
 import frappe
 import json
 from frappe import _
-from frappe.utils import flt, nowdate, nowtime
-from frappe.utils.data import now_datetime
+from frappe.utils import flt, nowdate
 from erpnext.accounts.utils import get_fiscal_year
 
 @frappe.whitelist()
-def create_collection_entry(cattle, date_of_collection, rows):
+def create_collection_entry(cattle=None, date_of_collection=None, rows=None):
     """
-    rows is expected to be a list of dicts:
-    [{ "animal_product": "...", "default_uom": "...", "quantity_collected": 1.5 }, ...]
-    The client may send rows as a JSON string, so we parse defensively.
+    Accepts:
+      - cattle (optional): single cattle name (string) — used when user selected one cow at top-level
+      - date_of_collection: date string
+      - rows: list of dicts OR JSON string. Each row may contain:
+          { "cattle": "COW-0001", "animal_product": "Milk", "default_uom": "Ltr", "quantity_collected": 2.5 }
+        OR (if top-level cattle used) rows may omit 'cattle' and you should treat them all as for the top-level cattle.
     """
-    if not cattle:
-        frappe.throw(_("A Cow is required"), frappe.ValidationError)
-
-    # Parse rows if needed
     if isinstance(rows, str):
         try:
             rows = json.loads(rows)
         except Exception:
-            # fallback to frappe.parse_json
             rows = frappe.parse_json(rows)
 
-    if not rows or len(rows) == 0:
+    rows = rows or []
+
+    # basic validations
+    if not rows:
         frappe.throw(_("No product rows provided"), frappe.ValidationError)
 
-    pb = frappe.get_doc("Cattle", cattle)
-    if not pb:
-        frappe.throw(_("Cattle {0} not found").format(cattle))
+    # Helper: append rows to a single cattle doc
+    def _append_rows_to_cattle(cattle_name, rows_for_cattle):
+        if not cattle_name:
+            frappe.throw(_("Cattle name required for these rows"), frappe.ValidationError)
 
-    for r in rows:
-        product_collected = r.get("animal_product") or r.get("animal_products") or r.get("product")
-        default_uom = r.get("default_uom") or r.get("products_default_uom") or ''
-        qty = flt(r.get("quantity_collected") or r.get("qty") or 0.0)
-        if not product_collected:
-            frappe.throw(_("Each row must include an animal_product"), frappe.ValidationError)
+        pb = frappe.get_doc("Cattle", cattle_name)
+        if not pb:
+            frappe.throw(_("Cattle {0} not found").format(cattle_name))
 
-        pb.append("production_log", {
-            "date_of_collection": date_of_collection or nowdate(),
-            "product_collected": product_collected,
-            "products_default_uom": default_uom,
-            "quantity_collected": qty
-        })
+        for r in rows_for_cattle:
+            product_collected = r.get("animal_product") or r.get("animal_products") or r.get("product")
+            default_uom = r.get("default_uom") or r.get("products_default_uom") or ''
+            qty = flt(r.get("quantity_collected") or r.get("qty") or 0.0)
+            if not product_collected:
+                frappe.throw(_("Each row must include an animal_product"), frappe.ValidationError)
 
-    pb.save(ignore_permissions=True)
-    frappe.db.commit()
+            pb.append("production_log", {
+                "date_of_collection": date_of_collection or nowdate(),
+                "product_collected": product_collected,
+                "products_default_uom": default_uom,
+                "quantity_collected": qty
+            })
 
-    # For each row, create Stock Ledger Entry
+        pb.save(ignore_permissions=True)
+        return pb
+
+    # If a top-level cattle value was passed and rows do NOT contain per-row 'cattle',
+    # assume rows belong to that single cattle.
     sle_results = []
-    for r in rows:
-        product_collected = r.get("animal_product") or r.get("animal_products") or r.get("product")
-        qty = flt(r.get("quantity_collected") or 0.0)
-        try:
-            sle = create_stock_ledger_entry_collections(product_collected, qty, reference_doctype="Cattle", reference_name=cattle)
-            sle_results.append(sle)
-        except Exception as e:
-            # Log error but continue processing next rows
-            frappe.log_error(f"create_stock_ledger_entry_collections failed for {product_collected}: {e}", "create_collection_entry")
 
+    # Determine whether rows are grouped by 'cattle' key
+    rows_have_cattle_key = any((isinstance(r, dict) and r.get("cattle")) for r in rows)
+
+    if cattle and not rows_have_cattle_key:
+        # All rows belong to this single cattle
+        pb = _append_rows_to_cattle(cattle, rows)
+
+        # Create SLEs for each row referencing this cattle
+        for r in rows:
+            try:
+                product_collected = r.get("animal_product") or r.get("animal_products") or r.get("product")
+                qty = flt(r.get("quantity_collected") or 0.0)
+                sle = create_stock_ledger_entry_collections(product_collected, qty, reference_doctype="Cattle", reference_name=cattle)
+                sle_results.append(sle)
+            except Exception as e:
+                frappe.log_error(f"create_stock_ledger_entry_collections failed for {product_collected}: {e}", "create_collection_entry")
+    else:
+        # Group rows by cattle field: rows must include 'cattle'
+        grouped = {}
+        for r in rows:
+            if not isinstance(r, dict):
+                continue
+            cattle_name = r.get("cattle") or r.get("cow")  # tolerant keys
+            if not cattle_name:
+                frappe.throw(_("Row missing 'cattle' value. When collecting per-cow, each row must include the cow (Cattle) name."), frappe.ValidationError)
+            grouped.setdefault(cattle_name, []).append(r)
+
+        # For each cattle, append its rows and create SLEs referencing that cattle
+        for cattle_name, group_rows in grouped.items():
+            try:
+                pb = _append_rows_to_cattle(cattle_name, group_rows)
+            except Exception as e:
+                # log and propagate so caller knows which cattle failed
+                frappe.log_error(f"Error appending rows to Cattle {cattle_name}: {e}", "create_collection_entry")
+                # continue to next cattle (don't stop entire process)
+                continue
+
+            for r in group_rows:
+                try:
+                    product_collected = r.get("animal_product") or r.get("animal_products") or r.get("product")
+                    qty = flt(r.get("quantity_collected") or 0.0)
+                    sle = create_stock_ledger_entry_collections(product_collected, qty, reference_doctype="Cattle", reference_name=cattle_name)
+                    sle_results.append(sle)
+                except Exception as e:
+                    frappe.log_error(f"create_stock_ledger_entry_collections failed for {product_collected}: {e}", "create_collection_entry")
+
+    # commit once at the end (we already saved individual docs, but a final commit ensures consistency)
+    frappe.db.commit()
     return {"updated": True, "sle_results": sle_results}
-
-
 
 
 # ---- Resolve Item from animal_product (returns item_code_value and item_name) ----
@@ -436,6 +477,27 @@ def _get_default_warehouse_for_item(item_name, item_doc=None):
 
 
 # ---- Main SLE creation function (uses the above helpers) ----
+import frappe
+from frappe.utils import flt, nowdate, nowtime
+from erpnext.accounts.utils import get_fiscal_year
+
+# Helper to get selling rate from Item Price
+def _get_selling_rate(item_code):
+    """
+    Fetch the price_list_rate from Item Price where selling=1, ordered by valid_from desc.
+    """
+    item_prices = frappe.get_all(
+        "Item Price",
+        filters={"item_code": item_code, "selling": 1},
+        fields=["price_list_rate"],
+        order_by="valid_from desc, modified desc",
+        limit=1
+    )
+    if item_prices:
+        return flt(item_prices[0].price_list_rate)
+    return 0.0
+
+# ---- Main SLE creation function (uses the above helpers) ----
 @frappe.whitelist()
 def create_stock_ledger_entry_collections(animal_product, qty_issued, reference_doctype=None, reference_name=None):
     """
@@ -471,8 +533,6 @@ def create_stock_ledger_entry_collections(animal_product, qty_issued, reference_
         latest = sle_rows[0]
         latest_qty_after = flt(latest.get("qty_after_transaction") or 0.0)
         incoming_rate = flt(latest.get("incoming_rate") or 0.0)
-        outgoing_rate = flt(latest.get("outgoing_rate") or 0.0)
-        valuation_rate = flt(latest.get("valuation_rate") or 0.0)
         fiscal_year = latest.get("fiscal_year")
         company = latest.get("company")
     else:
@@ -485,8 +545,6 @@ def create_stock_ledger_entry_collections(animal_product, qty_issued, reference_
         latest_qty_after = 0.0
         # Prefer item valuation_rate, then standard_rate, then 0.0
         incoming_rate = flt(item_doc.get("valuation_rate") or item_doc.get("standard_rate") or 0.0)
-        outgoing_rate = 0.0
-        valuation_rate = incoming_rate
 
         # Determine fiscal year
         try:
@@ -497,6 +555,21 @@ def create_stock_ledger_entry_collections(animal_product, qty_issued, reference_
 
         # company fallback: prefer target company (determined from item_doc or defaults)
         company = _determine_target_company(item_doc)
+
+    # Get selling rate from Item Price
+    selling_rate = _get_selling_rate(item_code_value)
+
+    # Use selling_rate for outgoing_rate and valuation_rate
+    outgoing_rate = selling_rate
+    valuation_rate = selling_rate
+
+    # If selling_rate is 0, fallback to original logic for valuation_rate
+    if valuation_rate == 0:
+        if sle_rows:
+            valuation_rate = flt(latest.get("valuation_rate") or 0.0)
+        else:
+            valuation_rate = incoming_rate
+        outgoing_rate = 0.0
 
     # Compute quantities and values
     actual_qty = flt(qty_issued)  # positive addition
@@ -534,7 +607,6 @@ def create_stock_ledger_entry_collections(animal_product, qty_issued, reference_
         return {"inserted": sle_doc.name, "submitted": False}
 
     return {"sle_name": sle_doc.name, "submitted": True}
-
 
 
 import frappe

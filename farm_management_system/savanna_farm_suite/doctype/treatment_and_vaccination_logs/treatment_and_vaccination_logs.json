@@ -18,7 +18,9 @@
   "vaccine_used",
   "qty_vaccine",
   "doctors_purchase_order_based_on_appointment_fee",
-  "status"
+  "status",
+  "section_break_qgvv",
+  "reminder_logs"
  ],
  "fields": [
   {
@@ -125,13 +127,25 @@
    "fieldtype": "Link",
    "label": "Specific Cattle under Treatment",
    "options": "Cattle"
+  },
+  {
+   "fieldname": "section_break_qgvv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "bold": 1,
+   "fieldname": "reminder_logs",
+   "fieldtype": "Table",
+   "label": "Reminder Logs",
+   "options": "Reminder Logs Table"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-09-08 09:50:20.115190",
+ "modified": "2025-09-24 10:55:17.986495",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Treatment and Vaccination Logs",

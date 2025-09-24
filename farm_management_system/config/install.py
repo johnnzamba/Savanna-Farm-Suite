@@ -177,3 +177,34 @@ def create_default_expense_accounts():
             'is_group': 0  # Assuming it's a leaf account
         })
         account.insert(ignore_permissions=True)
+
+
+import frappe
+
+DEFAULT_FOOTER = "Sent from Savanna Farm Suite"
+
+@frappe.whitelist()
+def set_default_email_footer():
+    """
+    Ensures System Settings.email_footer_address has a default value.
+
+    Default behavior:
+      - If email_footer_address is falsy/empty AND disable_standard_email_footer != 1
+        then set email_footer_address to DEFAULT_FOOTER and save.
+
+    Returns a dict with what was done.
+    """
+    ss = frappe.get_single("System Settings")
+
+    email_footer = ss.get("email_footer_address")
+    disable_flag = ss.get("disable_standard_email_footer")
+
+    # Condition used here: footer empty AND standard footer is enabled (disable != 1)
+    if (not email_footer) and (disable_flag != 1):
+        ss.email_footer_address = DEFAULT_FOOTER
+        # save with ignore_permissions if this may be run by system tasks
+        ss.save(ignore_permissions=True)
+        frappe.db.commit()
+        return {"updated": True, "message": "email_footer_address set to default."}
+
+    return {"updated": False, "message": "No change required."}

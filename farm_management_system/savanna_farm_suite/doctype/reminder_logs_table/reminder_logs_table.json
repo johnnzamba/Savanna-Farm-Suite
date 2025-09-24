@@ -1,0 +1,43 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-09-24 09:44:02.776384",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "reminder_sent_at_what_time",
+  "follow_up_scheduled"
+ ],
+ "fields": [
+  {
+   "fieldname": "reminder_sent_at_what_time",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Reminder Sent at what Time",
+   "width": "3"
+  },
+  {
+   "bold": 1,
+   "default": "0",
+   "fieldname": "follow_up_scheduled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Follow up scheduled",
+   "width": "2"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-09-24 09:47:16.287938",
+ "modified_by": "Administrator",
+ "module": "Savanna Farm Suite",
+ "name": "Reminder Logs Table",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

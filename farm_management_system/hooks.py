@@ -82,7 +82,7 @@ fixtures = [
     },
     {
         "dt": "Email Template",
-        "filters": [["name", "in", ["Doctor's Notification"]]]
+        "filters": [["name", "in", ["Doctor's Notification", "Notification on Missed Schedule"]]]
     },
     {
         "dt": "Page",
@@ -166,6 +166,7 @@ jinja = {
 after_migrate = [
     "farm_management_system.config.install.create_default_asset_category",
     "farm_management_system.config.install.create_default_expense_accounts",
+    "farm_management_system.config.install.set_default_email_footer"
 ]
 
 # before_install = "farm_management_system.install.before_install"
@@ -241,23 +242,12 @@ after_migrate = [
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"farm_management_system.tasks.all"
-# 	],
-# 	"daily": [
-# 		"farm_management_system.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"farm_management_system.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"farm_management_system.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"farm_management_system.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"farm_management_system.config.email.send_reminder_emails",
+        "farm_management_system.config.email.send_folowUp_emails"
+	]
+}
 
 # Testing
 # -------

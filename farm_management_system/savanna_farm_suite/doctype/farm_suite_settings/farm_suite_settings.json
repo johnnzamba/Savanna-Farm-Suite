@@ -8,7 +8,8 @@
   "reminders_for_farming_schedules_section",
   "enable_reminders_for_farming_schedules",
   "specify_number_of_days_for_initial_reminder",
-  "specify_number_of_days_after_missed_schedule"
+  "specify_number_of_days_after_missed_schedule",
+  "reminder_to_be_sent_at_what_time"
  ],
  "fields": [
   {
@@ -39,13 +40,21 @@
    "fieldname": "reminders_for_farming_schedules_section",
    "fieldtype": "Section Break",
    "label": "Reminders for Farming Schedules"
+  },
+  {
+   "bold": 1,
+   "depends_on": "eval:doc.enable_reminders_for_farming_schedules",
+   "description": "For Example: At 10am.",
+   "fieldname": "reminder_to_be_sent_at_what_time",
+   "fieldtype": "Time",
+   "label": "Reminders to be Sent at what time?"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-09-17 10:24:16.835108",
+ "modified": "2025-09-24 09:42:19.608164",
  "modified_by": "Administrator",
  "module": "Savanna Farm Suite",
  "name": "Farm Suite Settings",

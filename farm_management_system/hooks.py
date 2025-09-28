@@ -27,7 +27,7 @@ add_to_apps_screen = [
 app_include_css = [
     "/assets/farm_management_system/css/banners.css",
     "/assets/farm_management_system/css/farm_activity_schedule.css",
-    # "/assets/farm_management_system/css/theme.css"
+    "/assets/farm_management_system/css/theme.css"
 ]
 app_include_js = [ 
     "/assets/farm_management_system/js/banners.js", 

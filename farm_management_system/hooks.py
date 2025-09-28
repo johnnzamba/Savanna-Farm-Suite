@@ -26,8 +26,8 @@ add_to_apps_screen = [
 # include js, css files in header of desk.html
 app_include_css = [
     "/assets/farm_management_system/css/banners.css",
-    "/assets/farm_management_system/css//farm_activity_schedule.css",
-    # "/assets/farm_management_system/js/farm_activity_calend.css"
+    "/assets/farm_management_system/css/farm_activity_schedule.css",
+    # "/assets/farm_management_system/css/theme.css"
 ]
 app_include_js = [ 
     "/assets/farm_management_system/js/banners.js", 
